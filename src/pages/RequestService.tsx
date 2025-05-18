@@ -41,7 +41,7 @@ const RequestService: React.FC = () => {
     
     try {
       await createServiceRequest({
-        userId: user.uid,
+        userId: user.id, // Changed from user.uid to user.id
         userEmail: userData.email,
         description: description.trim(),
         status: 'pending',
