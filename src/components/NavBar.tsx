@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LogOut, Home } from 'lucide-react';
+import { LogOut, Home, Book } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 import { logout } from '@/services/auth';
@@ -57,6 +57,17 @@ const NavBar: React.FC = () => {
               }`}
             >
               Skin Analysis
+            </Link>
+            <Link 
+              to="/resources" 
+              className={`px-3 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/resources' 
+                  ? 'text-blue-700 bg-blue-50'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <Book className="h-4 w-4 mr-1 inline" />
+              Resources
             </Link>
             <Link 
               to="/request-service" 

@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import RequestService from "./pages/RequestService";
 import Home from "./pages/Home";
+import Resources from "./pages/Resources";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/request-service" element={<RequestService />} />
           <Route path="/home" element={<SkinCancerDetection />} />
+          <Route path="/resources" element={<Resources />} />
           <Route path="/" element={<Home />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
