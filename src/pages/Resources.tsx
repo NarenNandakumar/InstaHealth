@@ -1,6 +1,4 @@
-
 import React, { useState } from 'react';
-import NavBar from '@/components/NavBar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -377,7 +375,6 @@ const Resources = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <NavBar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <header className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Health Resources</h1>
@@ -469,7 +466,7 @@ const Resources = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <Thermometer className="h-5 w-5 mr-2 text-orange-500" />
+                  <Thermometer className="h-5 w-6 mr-2 text-orange-500" />
                   Health Calculator Tools
                 </CardTitle>
               </CardHeader>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -12,7 +11,6 @@ import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import NavBar from '@/components/NavBar';
 import { Dumbbell, Heart, Bed, Utensils, Scale } from 'lucide-react';
 
 // Define the schema for form validation
@@ -245,7 +243,6 @@ const HealthPlan: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <NavBar />
       <div className="container mx-auto py-10 px-4 max-w-5xl">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold text-blue-600 mb-2">Personalized Health Plan</h1>
