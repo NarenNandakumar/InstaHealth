@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Bot, MessageSquare, User, ShieldAlert, AlertTriangle } from 'lucide-react';
+import { Bot, MessageSquare, User, ShieldAlert, AlertTriangle, Hospital } from 'lucide-react';
 import DisclaimerBanner from '@/components/DisclaimerBanner';
 import { AIMessage, UserMessage } from '@/components/ChatMessages';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
