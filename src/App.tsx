@@ -8,6 +8,7 @@ import SkinCancerDetection from "./pages/SkinCancerDetection";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import RequestService from "./pages/RequestService";
+import Home from "./pages/Home";
 
 const queryClient = new QueryClient();
 
@@ -18,10 +19,11 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/home" element={<SkinCancerDetection />} />
+          <Route path="/dashboard" element={<SkinCancerDetection />} />
           <Route path="/login" element={<Login />} />
           <Route path="/request-service" element={<RequestService />} />
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/home" element={<SkinCancerDetection />} />
+          <Route path="/" element={<Home />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

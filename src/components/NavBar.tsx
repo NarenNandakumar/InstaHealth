@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { LogOut, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 import { logout } from '@/services/auth';
@@ -30,13 +30,24 @@ const NavBar: React.FC = () => {
     <nav className="bg-white shadow-sm w-full py-3 px-4 sm:px-6 lg:px-8 mb-6">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center">
-          <Link to="/home" className="text-xl font-bold text-gray-900">
+          <Link to="/" className="text-xl font-bold text-blue-600">
             InstaHealth
           </Link>
         </div>
         
         <div className="flex items-center space-x-4">
           <div className="hidden md:flex space-x-4">
+            <Link 
+              to="/" 
+              className={`px-3 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/' 
+                  ? 'text-blue-700 bg-blue-50'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <Home className="h-4 w-4 mr-1 inline" />
+              Home
+            </Link>
             <Link 
               to="/home" 
               className={`px-3 py-2 rounded-md text-sm font-medium ${
@@ -64,7 +75,7 @@ const NavBar: React.FC = () => {
             <span className="text-sm text-gray-600">
               {userData?.email}
             </span>
-            <Button variant="outline" size="sm" onClick={handleLogout}>
+            <Button variant="outline" size="sm" onClick={handleLogout} className="border-blue-200 text-blue-700">
               <LogOut className="h-4 w-4 mr-1" />
               Logout
             </Button>
