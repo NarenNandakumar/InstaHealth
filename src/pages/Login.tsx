@@ -44,7 +44,7 @@ const Login: React.FC = () => {
           title: "Success",
           description: "Logged in successfully!",
         });
-        navigate('/home');
+        navigate('/request-service'); // Updated to redirect to RequestService
       } else {
         toast({
           title: "Error",
@@ -95,7 +95,7 @@ const Login: React.FC = () => {
             ? "Account created! Your doctor verification is pending review." 
             : "Account created successfully!",
         });
-        navigate('/home');
+        navigate('/request-service'); // Updated to redirect to RequestService
       } else {
         toast({
           title: "Error",
