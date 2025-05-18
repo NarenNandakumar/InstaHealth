@@ -1,9 +1,5 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { ref, set } from 'firebase/database';
-import { auth, database } from '@/services/firebase';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
+import { login, register } from '@/services/auth';
 
 const Login: React.FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -33,16 +30,24 @@ const Login: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      toast({
-        title: "Success",
-        description: "Logged in successfully!",
-      });
-      navigate('/');
+      const result = await login(email, password);
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Logged in successfully!",
+        });
+        navigate('/');
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to login. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || "An unexpected error occurred",
         variant: "destructive",
       });
     } finally {
@@ -65,26 +70,24 @@ const Login: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Save user data to Firebase Realtime Database
-      await set(ref(database, 'users/' + user.uid), {
-        email: email,
-        userType: userType,
-        createdAt: Date.now()
-      });
-
-      toast({
-        title: "Success",
-        description: `Account created successfully as ${userType}!`,
-      });
-      
-      navigate('/');
+      const result = await register(email, password, userType);
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: `Account created successfully as ${userType}!`,
+        });
+        navigate('/');
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to create account. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || "An unexpected error occurred",
         variant: "destructive",
       });
     } finally {
