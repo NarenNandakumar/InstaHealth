@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,7 +26,7 @@ const AIChatbot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Hello! I'm your medical assistant powered by ChatGPT. I can provide general health information, but I'm not a replacement for professional medical advice. How can I help you today?",
+      content: "Hello! I'm your medical assistant. I can provide general health information, but I'm not a replacement for professional medical advice. How can I help you today?",
       sender: 'ai',
       timestamp: new Date(),
     }
@@ -196,7 +195,7 @@ const AIChatbot: React.FC = () => {
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-6 flex items-center gap-3">
         <Bot className="h-8 w-8" />
-        ChatGPT Medical Assistant
+        Medical Assistant AI
       </h1>
 
       <div className="grid md:grid-cols-12 gap-6">
@@ -207,7 +206,7 @@ const AIChatbot: React.FC = () => {
             <CardHeader className="border-b">
               <CardTitle>Chat with Medical AI</CardTitle>
               <CardDescription>
-                Ask health-related questions and get responses from ChatGPT
+                Ask health-related questions and get AI-powered responses
               </CardDescription>
             </CardHeader>
             
@@ -307,7 +306,7 @@ const AIChatbot: React.FC = () => {
                 <Textarea 
                   id="example-questions"
                   readOnly
-                  className="mt-2 text-sm"
+                  className="mt-2 text-sm min-h-[120px]"
                   value="What are common cold symptoms?
 What can help with seasonal allergies?
 How much water should I drink daily?
