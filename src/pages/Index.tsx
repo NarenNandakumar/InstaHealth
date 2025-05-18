@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, LogIn, LogOut, User } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { logout } from '@/services/auth';
+import VerificationStatus from '@/components/VerificationStatus';
 
 const Index: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
@@ -80,12 +81,13 @@ const Index: React.FC = () => {
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-            Skin Lesion Analysis Tool
+            InstaHealth
           </h1>
           
-          <div>
+          <div className="flex items-center gap-4">
             {user ? (
               <div className="flex items-center gap-4">
+                <VerificationStatus />
                 <div className="text-sm text-gray-600">
                   <span>Logged in as: </span>
                   <span className="font-semibold">{userData?.userType || 'User'}</span>

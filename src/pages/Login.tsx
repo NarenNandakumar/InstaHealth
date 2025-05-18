@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
@@ -45,7 +44,7 @@ const Login: React.FC = () => {
           title: "Success",
           description: "Logged in successfully!",
         });
-        navigate('/');
+        navigate('/home');
       } else {
         toast({
           title: "Error",
@@ -96,7 +95,7 @@ const Login: React.FC = () => {
             ? "Account created! Your doctor verification is pending review." 
             : "Account created successfully!",
         });
-        navigate('/');
+        navigate('/home');
       } else {
         toast({
           title: "Error",
