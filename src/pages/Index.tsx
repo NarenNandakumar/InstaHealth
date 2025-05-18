@@ -5,14 +5,17 @@ import ImageUpload from '@/components/ImageUpload';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import DisclaimerBanner from '@/components/DisclaimerBanner';
 import { Button } from '@/components/ui/button';
-import { loadModel, detectSkinCancer } from '@/services/modelService';
+import { loadModel, detectSkinCancer, setDemoMode } from '@/services/modelService';
 import { useToast } from '@/components/ui/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 const Index: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
   const [result, setResult] = useState<DetectionResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isModelLoaded, setIsModelLoaded] = useState<boolean>(false);
+  const [isDemoMode, setIsDemoMode] = useState<boolean>(true);
   const imageRef = useRef<HTMLImageElement>(null);
   const { toast } = useToast();
 
@@ -20,15 +23,18 @@ const Index: React.FC = () => {
   useEffect(() => {
     const initModel = async () => {
       try {
+        // Set demo mode to true for now
+        setDemoMode(true);
         await loadModel();
         setIsModelLoaded(true);
-        console.log('Model loaded successfully.');
+        setIsDemoMode(true); // Keep demo mode enabled
+        console.log('Ready in demo mode');
       } catch (error) {
         console.error('Error loading model:', error);
         toast({
-          title: 'Error Loading Model',
-          description: 'Failed to load the detection model. Please refresh the page.',
-          variant: 'destructive',
+          title: 'Using Demo Mode',
+          description: 'Using simulated predictions. No model is loaded.',
+          variant: 'default',
         });
       }
     };
@@ -82,6 +88,15 @@ const Index: React.FC = () => {
 
         <DisclaimerBanner />
 
+        {isDemoMode && (
+          <Alert className="mb-6 bg-yellow-50 border-yellow-200">
+            <AlertCircle className="h-4 w-4 mr-2 text-yellow-600" />
+            <AlertDescription className="text-yellow-800">
+              Currently running in demo mode with simulated predictions. The actual ML model is not loaded.
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="bg-white shadow-md rounded-lg p-6 mb-8">
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
@@ -109,7 +124,7 @@ const Index: React.FC = () => {
           <div className="flex justify-center mb-6">
             <Button 
               onClick={handleAnalyzeImage} 
-              disabled={!selectedImage || isLoading || !isModelLoaded}
+              disabled={!selectedImage || isLoading}
               className="px-6 py-2"
               size="lg"
             >
