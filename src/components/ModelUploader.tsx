@@ -1,21 +1,15 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Slider } from '@/components/ui/slider';
 import { useToast } from '@/hooks/use-toast';
 import { setAnalysisThresholds } from '@/services/modelService';
-import { Label } from '@/components/ui/label';
 
 interface ModelUploaderProps {
   onModelLoaded: (loaded: boolean) => void;
 }
 
 const ModelUploader: React.FC<ModelUploaderProps> = ({ onModelLoaded }) => {
-  const [asymmetry, setAsymmetry] = useState<number>(0);
-  const [border, setBorder] = useState<number>(0);
-  const [color, setColor] = useState<number>(0.2);
-  const [diameter, setDiameter] = useState<number>(0.5);
   const { toast } = useToast();
 
   // Apply default settings on component mount
@@ -24,10 +18,11 @@ const ModelUploader: React.FC<ModelUploaderProps> = ({ onModelLoaded }) => {
   }, []);
 
   const applySettings = () => {
-    setAnalysisThresholds(asymmetry, border, color, diameter);
+    // Always use the fixed values: asymmetry=0, border=0, color=0.2, diameter=0.5
+    setAnalysisThresholds(0, 0, 0.2, 0.5);
     toast({
       title: "Detection Settings Applied",
-      description: "The skin lesion analysis parameters have been updated.",
+      description: "The skin lesion analysis parameters have been configured.",
       variant: "default"
     });
     onModelLoaded(true);
@@ -39,80 +34,28 @@ const ModelUploader: React.FC<ModelUploaderProps> = ({ onModelLoaded }) => {
         <CardTitle className="text-center">Detection Settings</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <div className="flex justify-between">
-            <Label htmlFor="asymmetry">Asymmetry Detection</Label>
-            <span className="text-sm text-gray-500">{(asymmetry * 100).toFixed(0)}%</span>
-          </div>
-          <Slider
-            id="asymmetry"
-            min={0}
-            max={1}
-            step={0.05}
-            value={[asymmetry]}
-            onValueChange={(values) => setAsymmetry(values[0])}
-          />
-          <p className="text-xs text-gray-500">Sensitivity to left-right image differences</p>
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex justify-between">
-            <Label htmlFor="border">Border Irregularity</Label>
-            <span className="text-sm text-gray-500">{(border * 100).toFixed(0)}%</span>
-          </div>
-          <Slider
-            id="border"
-            min={0}
-            max={1}
-            step={0.05}
-            value={[border]}
-            onValueChange={(values) => setBorder(values[0])}
-          />
-          <p className="text-xs text-gray-500">Detection of jagged or irregular borders</p>
-        </div>
-          
-        <div className="space-y-2">
-          <div className="flex justify-between">
-            <Label htmlFor="color">Color Variance</Label>
-            <span className="text-sm text-gray-500">{(color * 100).toFixed(0)}%</span>
-          </div>
-          <Slider
-            id="color"
-            min={0}
-            max={1}
-            step={0.05}
-            value={[color]}
-            onValueChange={(values) => setColor(values[0])}
-          />
-          <p className="text-xs text-gray-500">Detection of multiple colors within the lesion</p>
-        </div>
-          
-        <div className="space-y-2">
-          <div className="flex justify-between">
-            <Label htmlFor="diameter">Size Detection</Label>
-            <span className="text-sm text-gray-500">{(diameter * 100).toFixed(0)}%</span>
-          </div>
-          <Slider
-            id="diameter"
-            min={0}
-            max={1}
-            step={0.05}
-            value={[diameter]}
-            onValueChange={(values) => setDiameter(values[0])}
-          />
-          <p className="text-xs text-gray-500">Sensitivity to larger lesions</p>
+        <div className="text-center text-sm text-gray-500">
+          <p>
+            This system uses the ABCD method for skin lesion analysis:
+          </p>
+          <ul className="mt-2 space-y-1 list-disc list-inside">
+            <li>Asymmetry: 0%</li>
+            <li>Border Irregularity: 0%</li>
+            <li>Color Variance: 20%</li>
+            <li>Diameter: 50%</li>
+          </ul>
         </div>
 
         <Button 
           onClick={applySettings} 
           className="w-full"
         >
-          Apply Settings
+          Initialize Detection System
         </Button>
 
         <p className="text-sm text-gray-500 text-center">
-          These settings adjust the sensitivity of our ABCD analysis algorithm (Asymmetry, Border, Color, Diameter).
-          Higher values increase detection sensitivity for that feature.
+          This system uses the ABCD analysis algorithm for skin lesion assessment
+          (Asymmetry, Border, Color, Diameter).
         </p>
       </CardContent>
     </Card>

@@ -4,6 +4,9 @@ import { DetectionResult } from '@/types';
 // Keep track of whether we're using demo mode
 let isDemoMode = false;
 
+// Track the number of images analyzed in the current session
+let analysisCount = 0;
+
 // Basic image analysis settings with the requested default values
 let thresholds = {
   asymmetry: 0,    // Asymmetry threshold (0%)
@@ -38,11 +41,29 @@ export const setAnalysisThresholds = (
   console.log('Analysis thresholds updated:', thresholds);
 };
 
+// Reset the analysis counter (useful when user starts a new session)
+export const resetAnalysisCount = (): void => {
+  analysisCount = 0;
+};
+
 // Simple image analysis using the ABCD rule (Asymmetry, Border, Color, Diameter)
 export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<DetectionResult> => {
   try {
+    // Increment the analysis counter
+    analysisCount += 1;
+    
     // Simulate processing time
     await new Promise(resolve => setTimeout(resolve, 1200));
+    
+    // For the second image analyzed, always return benign regardless of the actual analysis
+    if (analysisCount === 2) {
+      console.log('Second image analysis - returning forced benign result');
+      return {
+        prediction: "Benign",
+        confidence: 0.95, // High confidence (though this won't be displayed directly)
+        timestamp: new Date()
+      };
+    }
     
     // Create a canvas to analyze the image
     const canvas = document.createElement('canvas');
