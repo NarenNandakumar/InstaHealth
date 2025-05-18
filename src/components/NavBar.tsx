@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LogOut, Home, Book, Heart, Settings } from 'lucide-react';
+import { LogOut, Home, Book, Heart, Settings, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 import { logout } from '@/services/auth';
@@ -102,6 +102,17 @@ const NavBar: React.FC = () => {
             >
               <Settings className="h-4 w-4 inline" />
               <span className="ml-1">Access</span>
+            </Link>
+            <Link 
+              to="/ai-chatbot" 
+              className={`px-2 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/ai-chatbot' 
+                  ? 'text-blue-700 bg-blue-50'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <Bot className="h-4 w-4 inline" />
+              <span className="ml-1">AI Chat</span>
             </Link>
           </div>
           
