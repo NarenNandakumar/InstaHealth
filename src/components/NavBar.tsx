@@ -20,11 +20,10 @@ const NavBar: React.FC = () => {
         title: "Logged out",
         description: "You have been successfully logged out.",
       });
+      // Force page refresh to reflect logged out state
+      window.location.href = '/login';
     }
   };
-
-  // Only show navbar if user is logged in
-  if (!user) return null;
 
   return (
     <nav className="bg-white shadow-sm w-full py-3 px-4 sm:px-6 lg:px-8 mb-6">
@@ -92,16 +91,26 @@ const NavBar: React.FC = () => {
             </Link>
           </div>
           
-          <div className="flex items-center space-x-2">
-            <VerificationStatus />
-            <span className="text-sm text-gray-600">
-              {userData?.email}
-            </span>
-            <Button variant="outline" size="sm" onClick={handleLogout} className="border-blue-200 text-blue-700">
-              <LogOut className="h-4 w-4 mr-1" />
-              Logout
-            </Button>
-          </div>
+          {user ? (
+            <div className="flex items-center space-x-2">
+              <VerificationStatus />
+              <span className="text-sm text-gray-600">
+                {userData?.email}
+              </span>
+              <Button variant="outline" size="sm" onClick={handleLogout} className="border-blue-200 text-blue-700">
+                <LogOut className="h-4 w-4 mr-1" />
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <Link to="/login">
+                <Button variant="outline" size="sm" className="border-blue-200 text-blue-700">
+                  Login
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>

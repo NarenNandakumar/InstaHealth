@@ -11,6 +11,7 @@ import RequestService from "./pages/RequestService";
 import Home from "./pages/Home";
 import Resources from "./pages/Resources";
 import HealthPlan from "./pages/HealthPlan";
+import NavBar from "./components/NavBar";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <NavBar />
         <Routes>
           <Route path="/dashboard" element={<SkinCancerDetection />} />
           <Route path="/login" element={<Login />} />
