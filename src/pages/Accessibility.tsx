@@ -13,7 +13,7 @@ import { Slider } from '@/components/ui/slider';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Accessibility as AccessibilityIcon, Eye, CircleDot, CircleHalf } from 'lucide-react';
+import { Accessibility as AccessibilityIcon, Eye, CircleDot, CircleHelp } from 'lucide-react';
 
 const ACCESSIBILITY_STORAGE_KEY = 'insta_health_accessibility_settings';
 
@@ -208,7 +208,7 @@ const Accessibility: React.FC = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CircleHalf className="h-5 w-5" />
+              <CircleHelp className="h-5 w-5" />
               Movement & Sound
             </CardTitle>
             <CardDescription>Adjust animation and audio settings</CardDescription>
