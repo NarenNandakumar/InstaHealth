@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Book, 
   Heart, 
-  Virus, 
-  Lungs, 
+  Activity, 
+  Stethoscope, 
   Brain, 
   Eye, 
   HeartPulse, 
@@ -78,7 +78,7 @@ const Resources = () => {
     {
       id: "respiratory-diseases",
       name: "Respiratory Diseases",
-      icon: <Lungs className="h-6 w-6 text-blue-500" />,
+      icon: <Stethoscope className="h-6 w-6 text-blue-500" />,
       description: "Conditions affecting the lungs and breathing passages",
       content: (
         <div className="space-y-6">
@@ -255,7 +255,7 @@ const Resources = () => {
     {
       id: "infectious-diseases",
       name: "Infectious Diseases",
-      icon: <Virus className="h-6 w-6 text-green-500" />,
+      icon: <Activity className="h-6 w-6 text-green-500" />,
       description: "Illnesses caused by bacteria, viruses, fungi, or parasites",
       content: (
         <div className="space-y-6">
