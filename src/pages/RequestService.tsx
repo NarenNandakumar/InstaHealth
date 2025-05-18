@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,6 @@ import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { createServiceRequest } from '@/services/requestService';
 import { useNavigate } from 'react-router-dom';
-import NavBar from '@/components/NavBar';
 
 const RequestService: React.FC = () => {
   const [description, setDescription] = useState('');
@@ -68,7 +66,6 @@ const RequestService: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <NavBar />
       <div className="py-8 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Request Medical Consultation</h1>
