@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LogOut, Home, Book, Heart } from 'lucide-react';
+import { LogOut, Home, Book, Heart, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 import { logout } from '@/services/auth';
@@ -92,6 +92,17 @@ const NavBar: React.FC = () => {
             >
               Request Service
             </Link>
+            <Link 
+              to="/accessibility" 
+              className={`px-3 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/accessibility' 
+                  ? 'text-blue-700 bg-blue-50'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <Settings className="h-4 w-4 mr-1 inline" />
+              Accessibility
+            </Link>
           </div>
           
           {user ? (
@@ -100,6 +111,9 @@ const NavBar: React.FC = () => {
               <span className="text-sm text-gray-600">
                 {userData?.email}
               </span>
+              <Button variant="outline" size="sm" className="border-blue-200 text-blue-700">
+                Logged in
+              </Button>
               <Button variant="outline" size="sm" onClick={handleLogout} className="border-blue-200 text-blue-700">
                 <LogOut className="h-4 w-4 mr-1" />
                 Logout
