@@ -4,6 +4,13 @@ interface User {
   email: string;
   userType: 'user' | 'doctor';
   createdAt: number;
+  verificationStatus?: 'pending' | 'approved' | 'rejected';
+}
+
+interface VerificationFile {
+  name: string;
+  size: number;
+  type: string;
 }
 
 interface AuthResult {
@@ -15,6 +22,7 @@ interface AuthResult {
 // Mock users storage
 const USERS_STORAGE_KEY = 'skin_lesion_app_users';
 const CURRENT_USER_KEY = 'skin_lesion_app_current_user';
+const VERIFICATION_FILES_KEY = 'doctor_verification_files';
 
 // Helper to get users from localStorage
 const getUsers = (): Record<string, User> => {
@@ -25,6 +33,17 @@ const getUsers = (): Record<string, User> => {
 // Helper to save users to localStorage
 const saveUsers = (users: Record<string, User>): void => {
   localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+};
+
+// Helper to get verification files
+const getVerificationFiles = (): Record<string, VerificationFile[]> => {
+  const filesJson = localStorage.getItem(VERIFICATION_FILES_KEY);
+  return filesJson ? JSON.parse(filesJson) : {};
+};
+
+// Helper to save verification files
+const saveVerificationFiles = (files: Record<string, VerificationFile[]>): void => {
+  localStorage.setItem(VERIFICATION_FILES_KEY, JSON.stringify(files));
 };
 
 // Generate a simple ID
@@ -64,7 +83,8 @@ export const login = async (email: string, password: string): Promise<AuthResult
 export const register = async (
   email: string, 
   password: string, 
-  userType: 'user' | 'doctor'
+  userType: 'user' | 'doctor',
+  verificationFiles: VerificationFile[] = []
 ): Promise<AuthResult> => {
   try {
     const users = getUsers();
@@ -82,6 +102,16 @@ export const register = async (
       userType,
       createdAt: Date.now()
     };
+    
+    // Add verification status for doctors
+    if (userType === 'doctor') {
+      newUser.verificationStatus = 'pending';
+      
+      // Store verification files
+      const verificationFilesMap = getVerificationFiles();
+      verificationFilesMap[userId] = verificationFiles;
+      saveVerificationFiles(verificationFilesMap);
+    }
     
     // Store user
     users[userId] = newUser;
@@ -116,3 +146,10 @@ export const getCurrentUser = (): User | null => {
   const userJson = localStorage.getItem(CURRENT_USER_KEY);
   return userJson ? JSON.parse(userJson) : null;
 };
+
+// Get verification files for a specific user
+export const getUserVerificationFiles = (userId: string): VerificationFile[] => {
+  const files = getVerificationFiles();
+  return files[userId] || [];
+};
+

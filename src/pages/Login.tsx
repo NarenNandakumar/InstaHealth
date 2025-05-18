@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
@@ -9,6 +10,13 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
 import { login, register } from '@/services/auth';
+import DoctorVerification from '@/components/DoctorVerification';
+
+interface VerificationFile {
+  name: string;
+  size: number;
+  type: string;
+}
 
 const Login: React.FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -18,6 +26,7 @@ const Login: React.FC = () => {
   const [userType, setUserType] = useState<'user' | 'doctor'>('user');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [verificationFiles, setVerificationFiles] = useState<VerificationFile[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -67,14 +76,25 @@ const Login: React.FC = () => {
       return;
     }
 
+    if (userType === 'doctor' && verificationFiles.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please upload verification documents to register as a doctor",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const result = await register(email, password, userType);
+      const result = await register(email, password, userType, verificationFiles);
       if (result.success) {
         toast({
           title: "Success",
-          description: `Account created successfully as ${userType}!`,
+          description: userType === 'doctor' 
+            ? "Account created! Your doctor verification is pending review." 
+            : "Account created successfully!",
         });
         navigate('/');
       } else {
@@ -92,6 +112,14 @@ const Login: React.FC = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleUserTypeChange = (value: 'user' | 'doctor') => {
+    setUserType(value);
+    if (value === 'user') {
+      // Clear verification files if switching to regular user
+      setVerificationFiles([]);
     }
   };
 
@@ -210,7 +238,7 @@ const Login: React.FC = () => {
                   <Label htmlFor="user-type">I am a:</Label>
                   <RadioGroup 
                     value={userType} 
-                    onValueChange={(value) => setUserType(value as 'user' | 'doctor')} 
+                    onValueChange={(value) => handleUserTypeChange(value as 'user' | 'doctor')} 
                     className="flex space-x-4"
                   >
                     <div className="flex items-center space-x-2">
@@ -223,6 +251,13 @@ const Login: React.FC = () => {
                     </div>
                   </RadioGroup>
                 </div>
+
+                {userType === 'doctor' && (
+                  <DoctorVerification
+                    selectedFiles={verificationFiles}
+                    onFilesSelected={setVerificationFiles}
+                  />
+                )}
 
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Creating Account..." : "Create Account"}

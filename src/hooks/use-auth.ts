@@ -7,6 +7,7 @@ interface User {
   email: string;
   userType: 'user' | 'doctor';
   createdAt: number;
+  verificationStatus?: 'pending' | 'approved' | 'rejected';
 }
 
 export const useAuth = () => {
@@ -34,6 +35,9 @@ export const useAuth = () => {
   return { 
     user: currentUser, 
     userData: currentUser, // Keep API compatibility with previous Firebase version
-    loading 
+    loading,
+    isDoctor: currentUser?.userType === 'doctor',
+    isPendingVerification: currentUser?.userType === 'doctor' && currentUser?.verificationStatus === 'pending',
+    isVerified: currentUser?.userType === 'doctor' && currentUser?.verificationStatus === 'approved'
   };
 };
