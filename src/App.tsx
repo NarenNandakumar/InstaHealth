@@ -21,18 +21,22 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <NavBar />
-        <Routes>
-          <Route path="/dashboard" element={<SkinCancerDetection />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/request-service" element={<RequestService />} />
-          <Route path="/home" element={<SkinCancerDetection />} />
-          <Route path="/resources" element={<Resources />} />
-          <Route path="/health-plan" element={<HealthPlan />} />
-          <Route path="/" element={<Home />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <div className="min-h-screen flex flex-col">
+          <NavBar />
+          <div className="flex-grow">
+            <Routes>
+              <Route path="/dashboard" element={<SkinCancerDetection />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/request-service" element={<RequestService />} />
+              <Route path="/home" element={<SkinCancerDetection />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/health-plan" element={<HealthPlan />} />
+              <Route path="/" element={<Home />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+        </div>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
