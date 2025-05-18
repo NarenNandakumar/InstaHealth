@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ImageFile, DetectionResult } from '@/types';
 import ImageUpload from '@/components/ImageUpload';
 import ResultsDisplay from '@/components/ResultsDisplay';
@@ -7,9 +8,11 @@ import DisclaimerBanner from '@/components/DisclaimerBanner';
 import ModelUploader from '@/components/ModelUploader';
 import { Button } from '@/components/ui/button';
 import { detectSkinCancer } from '@/services/modelService';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, LogIn, LogOut, User } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
+import { logout } from '@/services/auth';
 
 const Index: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
@@ -18,6 +21,8 @@ const Index: React.FC = () => {
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const { toast } = useToast();
+  const { user, userData } = useAuth();
+  const navigate = useNavigate();
 
   // Automatically configure the app on load
   useEffect(() => {
@@ -60,17 +65,50 @@ const Index: React.FC = () => {
     setIsConfigured(configured);
   };
 
+  const handleLogout = async () => {
+    const success = await logout();
+    if (success) {
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
             Skin Lesion Analysis Tool
           </h1>
-          <p className="mt-3 text-lg text-gray-500">
-            Upload a clear image of your skin lesion for ABCD rule-based analysis
-          </p>
+          
+          <div>
+            {user ? (
+              <div className="flex items-center gap-4">
+                <div className="text-sm text-gray-600">
+                  <span>Logged in as: </span>
+                  <span className="font-semibold">{userData?.userType || 'User'}</span>
+                </div>
+                <Button variant="outline" onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Button variant="outline" asChild>
+                <Link to="/login">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Login
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
+
+        <p className="mt-3 text-lg text-gray-500 mb-8">
+          Upload a clear image of your skin lesion for ABCD rule-based analysis
+        </p>
 
         <DisclaimerBanner />
 
