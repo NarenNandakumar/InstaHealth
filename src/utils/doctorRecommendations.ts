@@ -28,40 +28,104 @@ export const getDoctorRecommendations = async (
   );
 };
 
-// Simple logic to determine medical specialties based on symptoms
+// Enhanced logic to determine medical specialties based on symptoms
 // In a real app, this would use more sophisticated medical logic or an API
 const determineSpecialties = (symptoms: string): string[] => {
   const symptomText = symptoms.toLowerCase();
   const specialties = new Set<string>();
   
+  // Neurological symptoms
   if (symptomText.includes('headache') || symptomText.includes('migraine') || 
-      symptomText.includes('dizzy') || symptomText.includes('memory')) {
+      symptomText.includes('dizzy') || symptomText.includes('memory') ||
+      symptomText.includes('seizure') || symptomText.includes('tremor')) {
     specialties.add('Neurology');
   }
   
+  // Cardiac symptoms
   if (symptomText.includes('chest') || symptomText.includes('heart') || 
-      symptomText.includes('breath') || symptomText.includes('pressure')) {
+      symptomText.includes('breath') || symptomText.includes('pressure') ||
+      symptomText.includes('palpitation') || symptomText.includes('irregular heartbeat')) {
     specialties.add('Cardiology');
   }
   
+  // Digestive symptoms
   if (symptomText.includes('stomach') || symptomText.includes('digest') || 
-      symptomText.includes('nausea') || symptomText.includes('vomit')) {
+      symptomText.includes('nausea') || symptomText.includes('vomit') ||
+      symptomText.includes('diarrhea') || symptomText.includes('constipation') ||
+      symptomText.includes('acid reflux') || symptomText.includes('bowel')) {
     specialties.add('Gastroenterology');
   }
   
+  // Dermatological symptoms
   if (symptomText.includes('skin') || symptomText.includes('rash') || 
-      symptomText.includes('itch') || symptomText.includes('acne')) {
+      symptomText.includes('itch') || symptomText.includes('acne') ||
+      symptomText.includes('mole') || symptomText.includes('eczema')) {
     specialties.add('Dermatology');
   }
   
+  // Musculoskeletal symptoms
   if (symptomText.includes('joint') || symptomText.includes('muscle') || 
-      symptomText.includes('pain') || symptomText.includes('back')) {
+      symptomText.includes('pain') || symptomText.includes('back') ||
+      symptomText.includes('arthritis') || symptomText.includes('sprain')) {
     specialties.add('Orthopedics');
   }
   
-  // Default to general practitioner if no specific specialty is found
+  // Respiratory symptoms
+  if (symptomText.includes('cough') || symptomText.includes('breath') ||
+      symptomText.includes('asthma') || symptomText.includes('lung') ||
+      symptomText.includes('wheeze') || symptomText.includes('pneumonia')) {
+    specialties.add('Pulmonology');
+  }
+  
+  // ENT symptoms
+  if (symptomText.includes('ear') || symptomText.includes('nose') ||
+      symptomText.includes('throat') || symptomText.includes('sinus') ||
+      symptomText.includes('hearing') || symptomText.includes('tonsil')) {
+    specialties.add('Otolaryngology (ENT)');
+  }
+  
+  // Eye symptoms
+  if (symptomText.includes('eye') || symptomText.includes('vision') ||
+      symptomText.includes('blur') || symptomText.includes('sight')) {
+    specialties.add('Ophthalmology');
+  }
+  
+  // Mental health symptoms
+  if (symptomText.includes('anxiety') || symptomText.includes('depress') ||
+      symptomText.includes('mood') || symptomText.includes('stress') ||
+      symptomText.includes('mental') || symptomText.includes('sleep')) {
+    specialties.add('Psychiatry');
+  }
+  
+  // Endocrine symptoms
+  if (symptomText.includes('diabetes') || symptomText.includes('thyroid') ||
+      symptomText.includes('hormones') || symptomText.includes('fatigue') ||
+      symptomText.includes('weight') || symptomText.includes('thirst')) {
+    specialties.add('Endocrinology');
+  }
+  
+  // Gynecological symptoms
+  if (symptomText.includes('period') || symptomText.includes('pregnancy') ||
+      symptomText.includes('vaginal') || symptomText.includes('menstrual')) {
+    specialties.add('Obstetrics & Gynecology');
+  }
+  
+  // Urological symptoms
+  if (symptomText.includes('urinate') || symptomText.includes('bladder') ||
+      symptomText.includes('kidney') || symptomText.includes('prostate')) {
+    specialties.add('Urology');
+  }
+  
+  // Allergies and immunology
+  if (symptomText.includes('allerg') || symptomText.includes('immune') ||
+      symptomText.includes('hives') || symptomText.includes('sneez')) {
+    specialties.add('Allergy & Immunology');
+  }
+  
+  // Default to Family Medicine if no specific specialty is found
+  // This is more specific than General Practice
   if (specialties.size === 0) {
-    specialties.add('General Practice');
+    specialties.add('Family Medicine');
   }
   
   return Array.from(specialties);
