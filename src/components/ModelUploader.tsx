@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
@@ -12,11 +12,16 @@ interface ModelUploaderProps {
 }
 
 const ModelUploader: React.FC<ModelUploaderProps> = ({ onModelLoaded }) => {
-  const [asymmetry, setAsymmetry] = useState<number>(0.3);
-  const [border, setBorder] = useState<number>(0.4);
-  const [color, setColor] = useState<number>(0.35);
-  const [diameter, setDiameter] = useState<number>(0.45);
+  const [asymmetry, setAsymmetry] = useState<number>(0);
+  const [border, setBorder] = useState<number>(0);
+  const [color, setColor] = useState<number>(0.2);
+  const [diameter, setDiameter] = useState<number>(0.5);
   const { toast } = useToast();
+
+  // Apply default settings on component mount
+  useEffect(() => {
+    applySettings();
+  }, []);
 
   const applySettings = () => {
     setAnalysisThresholds(asymmetry, border, color, diameter);

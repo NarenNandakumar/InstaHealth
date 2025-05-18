@@ -1,14 +1,15 @@
+
 import { DetectionResult } from '@/types';
 
 // Keep track of whether we're using demo mode
 let isDemoMode = false;
 
-// Basic image analysis settings
+// Basic image analysis settings with the requested default values
 let thresholds = {
-  asymmetry: 0.3,  // Asymmetry threshold
-  border: 0.4,     // Border irregularity threshold
-  color: 0.35,     // Color variance threshold
-  diameter: 0.45   // Size threshold
+  asymmetry: 0,    // Asymmetry threshold (0%)
+  border: 0,       // Border irregularity threshold (0%)
+  color: 0.2,      // Color variance threshold (20%)
+  diameter: 0.5    // Size threshold (50%)
 };
 
 export const loadModel = async (): Promise<void> => {
@@ -100,6 +101,9 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
     
     // Calculate final score and determine prediction
     const malignancyScore = metrics.asymmetry + metrics.border + metrics.color + metrics.diameter;
+    
+    // In actual calculation, we still compute the real confidence score
+    // but it won't be displayed to the user (ResultsDisplay handles that)
     const confidence = malignancyScore > 0.5 ? malignancyScore : 1 - malignancyScore;
     const prediction = malignancyScore > 0.5 ? "Malignant" : "Benign";
     

@@ -19,6 +19,11 @@ const Index: React.FC = () => {
   const imageRef = useRef<HTMLImageElement>(null);
   const { toast } = useToast();
 
+  // Automatically configure the app on load
+  useEffect(() => {
+    // This will be handled by the ModelUploader component via its useEffect
+  }, []);
+
   // Reset result when image changes
   useEffect(() => {
     setResult(null);
