@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LogOut, Home, Book, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
@@ -12,6 +12,7 @@ const NavBar: React.FC = () => {
   const { user, userData } = useAuth();
   const { toast } = useToast();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     const success = await logout();
@@ -20,8 +21,10 @@ const NavBar: React.FC = () => {
         title: "Logged out",
         description: "You have been successfully logged out.",
       });
-      // Force page refresh to reflect logged out state
-      window.location.href = '/login';
+      // Navigate to login page after logout
+      navigate('/login');
+      // Force a page refresh to ensure all user state is cleared
+      window.location.reload();
     }
   };
 

@@ -11,7 +11,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
-import NavBar from '@/components/NavBar';
 
 const SkinCancerDetection: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
@@ -59,7 +58,6 @@ const SkinCancerDetection: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <NavBar />
       <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">
           Skin Lesion Analysis
