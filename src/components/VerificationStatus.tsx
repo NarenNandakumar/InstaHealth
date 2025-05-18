@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { InfoCircle } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { 
   Tooltip,
   TooltipContent,
@@ -23,7 +23,7 @@ const VerificationStatus: React.FC = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="flex items-center cursor-help">
-            <InfoCircle className="h-5 w-5 text-blue-500" />
+            <Info className="h-5 w-5 text-blue-500" />
             <Badge variant="outline" className="ml-2 bg-yellow-50 text-yellow-800 border-yellow-300">
               Not Verified
             </Badge>
