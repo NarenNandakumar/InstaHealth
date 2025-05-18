@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import Resources from "./pages/Resources";
 import HealthPlan from "./pages/HealthPlan";
 import Accessibility from "./pages/Accessibility";
+import AIChatbot from "./pages/AIChatbot";
 import NavBar from "./components/NavBar";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/resources" element={<Resources />} />
               <Route path="/health-plan" element={<HealthPlan />} />
               <Route path="/accessibility" element={<Accessibility />} />
+              <Route path="/ai-chatbot" element={<AIChatbot />} />
               <Route path="/" element={<Home />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
