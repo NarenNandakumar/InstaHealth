@@ -10,6 +10,10 @@ import { Bot, MessageSquare, User, ShieldAlert, AlertTriangle } from 'lucide-rea
 import DisclaimerBanner from '@/components/DisclaimerBanner';
 import { AIMessage, UserMessage } from '@/components/ChatMessages';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import LocationInput from '@/components/LocationInput';
+import SymptomDescription from '@/components/SymptomDescription';
+import DoctorRecommendations from '@/components/DoctorRecommendations';
+import { Doctor, getDoctorRecommendations } from '@/utils/doctorRecommendations';
 
 interface Message {
   id: string;
@@ -32,6 +36,12 @@ const AIChatbot: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  
+  // New state for the symptom and location feature
+  const [symptoms, setSymptoms] = useState('');
+  const [location, setLocation] = useState('');
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [isLoadingDoctors, setIsLoadingDoctors] = useState(false);
   
   // Hardcoded API key (as requested by the user)
   const apiKey = "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";
@@ -139,6 +149,49 @@ const AIChatbot: React.FC = () => {
     setIsProcessing(false);
   };
 
+  // Function to handle finding doctors
+  const handleFindDoctors = async () => {
+    if (!symptoms.trim() || !location.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide both symptoms and location",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsLoadingDoctors(true);
+    
+    try {
+      // Get doctor recommendations based on symptoms and location
+      const recommendedDoctors = await getDoctorRecommendations(symptoms, location);
+      setDoctors(recommendedDoctors);
+      
+      // Add a message to the chat about the recommendations
+      const doctorMessage: Message = {
+        id: Date.now().toString(),
+        content: `Based on your symptoms (${symptoms}), I've found ${recommendedDoctors.length} healthcare providers in the ${location} area that may be able to help you. Please see the recommendations below.`,
+        sender: 'ai',
+        timestamp: new Date(),
+      };
+      
+      setMessages(prev => [...prev, doctorMessage]);
+      
+      toast({
+        title: "Recommendations Found",
+        description: `Found ${recommendedDoctors.length} healthcare providers that may be able to help.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to find doctor recommendations",
+        variant: "destructive"
+      });
+    }
+    
+    setIsLoadingDoctors(false);
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-6 flex items-center gap-3">
@@ -197,6 +250,9 @@ const AIChatbot: React.FC = () => {
               </form>
             </CardFooter>
           </Card>
+
+          {/* Doctor recommendations section */}
+          <DoctorRecommendations doctors={doctors} isLoading={isLoadingDoctors} />
         </div>
         
         <div className="md:col-span-4">
@@ -214,6 +270,26 @@ const AIChatbot: React.FC = () => {
                   This AI assistant is for informational purposes only. It does not provide medical advice, diagnosis, or treatment. 
                   Always seek the advice of physicians or qualified healthcare providers with any questions regarding medical conditions.
                 </p>
+              </div>
+              
+              {/* New find doctor section */}
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-md space-y-4">
+                <h3 className="font-medium text-blue-800 flex items-center gap-2">
+                  <Hospital className="h-4 w-4" />
+                  Find Doctors Near You
+                </h3>
+                
+                <SymptomDescription symptoms={symptoms} setSymptoms={setSymptoms} />
+                
+                <LocationInput location={location} setLocation={setLocation} />
+                
+                <Button 
+                  className="w-full mt-2" 
+                  onClick={handleFindDoctors}
+                  disabled={isLoadingDoctors || !symptoms.trim() || !location.trim()}
+                >
+                  {isLoadingDoctors ? "Finding Doctors..." : "Find Recommended Doctors"}
+                </Button>
               </div>
               
               <div>
