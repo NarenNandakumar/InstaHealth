@@ -10,9 +10,10 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
-import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { Accessibility as AccessibilityIcon, Eye, CircleDot, CircleHalf } from 'lucide-react';
 
 const ACCESSIBILITY_STORAGE_KEY = 'insta_health_accessibility_settings';
 
@@ -82,13 +83,70 @@ const Accessibility: React.FC = () => {
     });
   };
 
+  const saveSettings = () => {
+    localStorage.setItem(ACCESSIBILITY_STORAGE_KEY, JSON.stringify(settings));
+    toast({
+      title: "Settings Saved",
+      description: "Your accessibility settings have been saved.",
+    });
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8">Accessibility Settings</h1>
+      <h1 className="text-3xl font-bold mb-8 flex items-center gap-3">
+        <AccessibilityIcon className="h-8 w-8" />
+        Accessibility Settings
+      </h1>
+      
+      {/* SVG Filters for color blind modes */}
+      <svg className="absolute" style={{ width: 0, height: 0, position: 'absolute' }} aria-hidden="true" focusable="false">
+        {/* Protanopia Filter */}
+        <defs>
+          <filter id="protanopia-filter">
+            <feColorMatrix
+              type="matrix"
+              values="0.567, 0.433, 0, 0, 0
+                      0.558, 0.442, 0, 0, 0
+                      0, 0.242, 0.758, 0, 0
+                      0, 0, 0, 1, 0"
+            />
+          </filter>
+        </defs>
+        
+        {/* Deuteranopia Filter */}
+        <defs>
+          <filter id="deuteranopia-filter">
+            <feColorMatrix
+              type="matrix"
+              values="0.625, 0.375, 0, 0, 0
+                      0.7, 0.3, 0, 0, 0
+                      0, 0.3, 0.7, 0, 0
+                      0, 0, 0, 1, 0"
+            />
+          </filter>
+        </defs>
+        
+        {/* Tritanopia Filter */}
+        <defs>
+          <filter id="tritanopia-filter">
+            <feColorMatrix
+              type="matrix"
+              values="0.95, 0.05, 0, 0, 0
+                      0, 0.433, 0.567, 0, 0
+                      0, 0.475, 0.525, 0, 0
+                      0, 0, 0, 1, 0"
+            />
+          </filter>
+        </defs>
+      </svg>
+      
       <div className="grid gap-8 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Visual Settings</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Eye className="h-5 w-5" />
+              Visual Settings
+            </CardTitle>
             <CardDescription>Adjust how content appears on screen</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -121,48 +179,38 @@ const Accessibility: React.FC = () => {
 
             <div className="space-y-4">
               <Label>Color Blind Modes</Label>
-              <div className="grid grid-cols-1 gap-3">
+              <RadioGroup 
+                value={settings.colorBlindMode || "normal"}
+                onValueChange={(value) => handleChange('colorBlindMode', value === "normal" ? null : value)}
+                className="space-y-2"
+              >
                 <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="protanopia" 
-                    checked={settings.colorBlindMode === 'protanopia'} 
-                    onCheckedChange={(checked) => {
-                      if (checked) handleChange('colorBlindMode', 'protanopia');
-                      else if (settings.colorBlindMode === 'protanopia') handleChange('colorBlindMode', null);
-                    }}
-                  />
+                  <RadioGroupItem value="normal" id="normal" />
+                  <Label htmlFor="normal">Normal Vision</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="protanopia" id="protanopia" />
                   <Label htmlFor="protanopia">Red-Green Color Blindness (Protanopia)</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="deuteranopia" 
-                    checked={settings.colorBlindMode === 'deuteranopia'} 
-                    onCheckedChange={(checked) => {
-                      if (checked) handleChange('colorBlindMode', 'deuteranopia');
-                      else if (settings.colorBlindMode === 'deuteranopia') handleChange('colorBlindMode', null);
-                    }}
-                  />
+                  <RadioGroupItem value="deuteranopia" id="deuteranopia" />
                   <Label htmlFor="deuteranopia">Green-Red Color Blindness (Deuteranopia)</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="tritanopia" 
-                    checked={settings.colorBlindMode === 'tritanopia'} 
-                    onCheckedChange={(checked) => {
-                      if (checked) handleChange('colorBlindMode', 'tritanopia');
-                      else if (settings.colorBlindMode === 'tritanopia') handleChange('colorBlindMode', null);
-                    }}
-                  />
+                  <RadioGroupItem value="tritanopia" id="tritanopia" />
                   <Label htmlFor="tritanopia">Blue-Yellow Color Blindness (Tritanopia)</Label>
                 </div>
-              </div>
+              </RadioGroup>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Movement & Sound</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <CircleHalf className="h-5 w-5" />
+              Movement & Sound
+            </CardTitle>
             <CardDescription>Adjust animation and audio settings</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -189,6 +237,28 @@ const Accessibility: React.FC = () => {
                 onCheckedChange={(checked) => handleChange('screenReader', checked)}
               />
             </div>
+            
+            <div className="pt-4">
+              <div className="p-4 bg-gray-50 rounded-lg mt-4">
+                <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                  <CircleDot className="h-4 w-4" />
+                  Test Your Settings
+                </h3>
+                <p className="text-gray-600 mt-1">
+                  The text and elements on this page reflect your current accessibility settings. 
+                  Adjust the settings and observe the changes in real-time.
+                </p>
+                
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  <div className="h-8 bg-blue-500 rounded"></div>
+                  <div className="h-8 bg-green-500 rounded"></div>
+                  <div className="h-8 bg-red-500 rounded"></div>
+                  <div className="h-8 bg-yellow-500 rounded"></div>
+                  <div className="h-8 bg-purple-500 rounded"></div>
+                  <div className="h-8 bg-pink-500 rounded"></div>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -197,7 +267,7 @@ const Accessibility: React.FC = () => {
         <Button variant="outline" className="mr-4" onClick={resetSettings}>
           Reset to Defaults
         </Button>
-        <Button>
+        <Button onClick={saveSettings}>
           Save Settings
         </Button>
       </div>

@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -87,6 +88,56 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  /* High Contrast Mode */
+  .high-contrast {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+    
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+    
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 80%;
+    
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 100%;
+    
+    --border: 0 0% 40%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 100%;
+  }
+  
+  /* Color Blind Modes */
+  [data-color-mode="protanopia"] {
+    /* Filter for red-green color blindness (protanopia) */
+    filter: url('#protanopia-filter');
+  }
+  
+  [data-color-mode="deuteranopia"] {
+    /* Filter for green-red color blindness (deuteranopia) */
+    filter: url('#deuteranopia-filter');
+  }
+  
+  [data-color-mode="tritanopia"] {
+    /* Filter for blue-yellow color blindness (tritanopia) */
+    filter: url('#tritanopia-filter');
+  }
+  
+  /* Reduce Motion */
+  .reduce-motion * {
+    transition: none !important;
+    animation: none !important;
   }
 }
 
