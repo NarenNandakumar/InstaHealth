@@ -30,19 +30,11 @@ const AIChatbot: React.FC = () => {
   ]);
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [apiKey, setApiKey] = useState('');
-  const [useStoredKey, setUseStoredKey] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-
-  // Check for stored API key on component mount
-  useEffect(() => {
-    const storedKey = localStorage.getItem('openai_api_key');
-    if (storedKey) {
-      setApiKey(storedKey);
-      setUseStoredKey(true);
-    }
-  }, []);
+  
+  // Hardcoded API key (as requested by the user)
+  const apiKey = "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";
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -51,27 +43,6 @@ const AIChatbot: React.FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const saveApiKey = () => {
-    if (apiKey.trim()) {
-      localStorage.setItem('openai_api_key', apiKey);
-      setUseStoredKey(true);
-      toast({
-        title: "API Key Saved",
-        description: "Your OpenAI API key has been saved locally",
-      });
-    }
-  };
-
-  const clearApiKey = () => {
-    localStorage.removeItem('openai_api_key');
-    setApiKey('');
-    setUseStoredKey(false);
-    toast({
-      title: "API Key Removed",
-      description: "Your OpenAI API key has been removed",
-    });
-  };
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,17 +73,11 @@ const AIChatbot: React.FC = () => {
     
     // Use ChatGPT API
     try {
-      const key = useStoredKey ? localStorage.getItem('openai_api_key') : apiKey;
-      
-      if (!key) {
-        throw new Error("API key not provided");
-      }
-
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${key}`
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
@@ -185,43 +150,6 @@ const AIChatbot: React.FC = () => {
         <div className="md:col-span-8">
           <DisclaimerBanner />
           
-          {!useStoredKey && (
-            <Alert className="mb-4 bg-amber-50 border-amber-200">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
-              <AlertTitle className="text-amber-800">API Key Required</AlertTitle>
-              <AlertDescription className="text-amber-700">
-                <div className="flex flex-col gap-2 mt-2">
-                  <p>Enter your OpenAI API key to enable ChatGPT responses.</p>
-                  <div className="flex gap-2">
-                    <Input 
-                      type="password"
-                      placeholder="Enter OpenAI API Key" 
-                      value={apiKey} 
-                      onChange={(e) => setApiKey(e.target.value)}
-                      className="flex-1"
-                    />
-                    <Button onClick={saveApiKey} disabled={!apiKey.trim()}>
-                      Save Key
-                    </Button>
-                  </div>
-                  <p className="text-xs italic">Warning: Storing API keys in the browser is not secure for production use.</p>
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
-          
-          {useStoredKey && (
-            <Alert className="mb-4 bg-green-50 border-green-200">
-              <AlertTitle className="text-green-800">API Key Set</AlertTitle>
-              <AlertDescription className="text-green-700 flex justify-between items-center">
-                <span>Your OpenAI API key is set and ready to use</span>
-                <Button variant="outline" size="sm" onClick={clearApiKey}>
-                  Clear Key
-                </Button>
-              </AlertDescription>
-            </Alert>
-          )}
-          
           <Card className="h-[calc(100vh-400px)] flex flex-col">
             <CardHeader className="border-b">
               <CardTitle>Chat with Medical AI</CardTitle>
@@ -252,12 +180,12 @@ const AIChatbot: React.FC = () => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Type your medical question here..."
-                    disabled={isProcessing || (!apiKey && !useStoredKey)}
+                    disabled={isProcessing}
                     className="flex-1"
                   />
                   <Button 
                     type="submit" 
-                    disabled={isProcessing || (!apiKey && !useStoredKey)} 
+                    disabled={isProcessing} 
                     className="shrink-0"
                   >
                     {isProcessing ? "Processing..." : "Send"}
