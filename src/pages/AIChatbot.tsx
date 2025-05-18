@@ -6,41 +6,43 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Bot, MessageSquare, User, ShieldAlert } from 'lucide-react';
+import { Bot, MessageSquare, User, ShieldAlert, AlertTriangle } from 'lucide-react';
 import DisclaimerBanner from '@/components/DisclaimerBanner';
 import { AIMessage, UserMessage } from '@/components/ChatMessages';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface Message {
   id: string;
   content: string;
   sender: 'user' | 'ai';
   timestamp: Date;
+  isLoading?: boolean;
 }
-
-const medicalResponses = [
-  "Based on your symptoms, this could be a common cold. Rest, fluids, and over-the-counter medications may help. However, please consult with a healthcare professional for proper diagnosis.",
-  "That sounds like it might be allergies. Common treatments include antihistamines and avoiding known allergens. A doctor can provide specific recommendations for your situation.",
-  "Your description aligns with possible symptoms of dehydration. Try increasing your fluid intake and consider electrolyte solutions. If symptoms persist, please seek medical attention.",
-  "Those symptoms may indicate a migraine. Common management includes rest in a dark room, pain relievers, and staying hydrated. A healthcare provider can recommend appropriate treatments.",
-  "This might be related to stress or anxiety. Consider relaxation techniques and ensure adequate sleep. A mental health professional can provide more personalized guidance.",
-  "That could potentially be associated with high blood pressure. Regular monitoring and consultation with a healthcare provider is recommended.",
-  "Your symptoms might suggest a vitamin deficiency. A balanced diet or supplements may help, but please consult with a healthcare provider before starting any supplements.",
-  "This description sounds like it could be related to seasonal affective disorder. Light therapy and other treatments might be beneficial under medical supervision.",
-];
 
 const AIChatbot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Hello! I'm your medical assistant. I can provide general health information, but I'm not a replacement for professional medical advice. How can I help you today?",
+      content: "Hello! I'm your medical assistant powered by ChatGPT. I can provide general health information, but I'm not a replacement for professional medical advice. How can I help you today?",
       sender: 'ai',
       timestamp: new Date(),
     }
   ]);
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+  const [useStoredKey, setUseStoredKey] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  // Check for stored API key on component mount
+  useEffect(() => {
+    const storedKey = localStorage.getItem('openai_api_key');
+    if (storedKey) {
+      setApiKey(storedKey);
+      setUseStoredKey(true);
+    }
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -49,6 +51,27 @@ const AIChatbot: React.FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const saveApiKey = () => {
+    if (apiKey.trim()) {
+      localStorage.setItem('openai_api_key', apiKey);
+      setUseStoredKey(true);
+      toast({
+        title: "API Key Saved",
+        description: "Your OpenAI API key has been saved locally",
+      });
+    }
+  };
+
+  const clearApiKey = () => {
+    localStorage.removeItem('openai_api_key');
+    setApiKey('');
+    setUseStoredKey(false);
+    toast({
+      title: "API Key Removed",
+      description: "Your OpenAI API key has been removed",
+    });
+  };
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,45 +86,147 @@ const AIChatbot: React.FC = () => {
       timestamp: new Date(),
     };
     
-    setMessages(prev => [...prev, userMessage]);
+    // Add placeholder for AI response
+    const placeholderId = (Date.now() + 1).toString();
+    const loadingMessage: Message = {
+      id: placeholderId,
+      content: "Thinking...",
+      sender: 'ai',
+      timestamp: new Date(),
+      isLoading: true,
+    };
+    
+    setMessages(prev => [...prev, userMessage, loadingMessage]);
     setInput('');
     setIsProcessing(true);
     
-    // Simulate AI response
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        content: medicalResponses[Math.floor(Math.random() * medicalResponses.length)],
-        sender: 'ai',
-        timestamp: new Date(),
-      };
+    // Use ChatGPT API
+    try {
+      const key = useStoredKey ? localStorage.getItem('openai_api_key') : apiKey;
       
-      setMessages(prev => [...prev, aiResponse]);
-      setIsProcessing(false);
+      if (!key) {
+        throw new Error("API key not provided");
+      }
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${key}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            {
+              role: "system",
+              content: "You are a helpful medical AI assistant. Provide general health information but always remind users to consult healthcare professionals for medical advice, diagnosis, or treatment. Be informative but cautious when discussing medical topics."
+            },
+            { role: "user", content: input }
+          ],
+          temperature: 0.7,
+          max_tokens: 500
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || "Error calling OpenAI API");
+      }
+      
+      const responseData = await response.json();
+      const aiResponse = responseData.choices[0].message.content;
+      
+      // Replace loading message with actual response
+      setMessages(prev => 
+        prev.map(msg => 
+          msg.id === placeholderId 
+            ? { ...msg, content: aiResponse, isLoading: false } 
+            : msg
+        )
+      );
       
       toast({
-        title: "New response",
-        description: "The AI has responded to your question",
+        title: "Response received",
+        description: "ChatGPT has responded to your question",
       });
-    }, 1500);
+      
+    } catch (error: any) {
+      // Replace loading message with error
+      setMessages(prev => 
+        prev.map(msg => 
+          msg.id === placeholderId 
+            ? { 
+                ...msg, 
+                content: `Error: ${error.message || "Failed to get response from ChatGPT"}. Please try again.`, 
+                isLoading: false 
+              } 
+            : msg
+        )
+      );
+      
+      toast({
+        title: "Error",
+        description: error.message || "Failed to get response from ChatGPT",
+        variant: "destructive"
+      });
+    }
+    
+    setIsProcessing(false);
   };
 
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-6 flex items-center gap-3">
         <Bot className="h-8 w-8" />
-        Medical AI Assistant
+        ChatGPT Medical Assistant
       </h1>
 
       <div className="grid md:grid-cols-12 gap-6">
         <div className="md:col-span-8">
           <DisclaimerBanner />
           
-          <Card className="h-[calc(100vh-300px)] flex flex-col">
+          {!useStoredKey && (
+            <Alert className="mb-4 bg-amber-50 border-amber-200">
+              <AlertTriangle className="h-4 w-4 text-amber-500" />
+              <AlertTitle className="text-amber-800">API Key Required</AlertTitle>
+              <AlertDescription className="text-amber-700">
+                <div className="flex flex-col gap-2 mt-2">
+                  <p>Enter your OpenAI API key to enable ChatGPT responses.</p>
+                  <div className="flex gap-2">
+                    <Input 
+                      type="password"
+                      placeholder="Enter OpenAI API Key" 
+                      value={apiKey} 
+                      onChange={(e) => setApiKey(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button onClick={saveApiKey} disabled={!apiKey.trim()}>
+                      Save Key
+                    </Button>
+                  </div>
+                  <p className="text-xs italic">Warning: Storing API keys in the browser is not secure for production use.</p>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          {useStoredKey && (
+            <Alert className="mb-4 bg-green-50 border-green-200">
+              <AlertTitle className="text-green-800">API Key Set</AlertTitle>
+              <AlertDescription className="text-green-700 flex justify-between items-center">
+                <span>Your OpenAI API key is set and ready to use</span>
+                <Button variant="outline" size="sm" onClick={clearApiKey}>
+                  Clear Key
+                </Button>
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          <Card className="h-[calc(100vh-400px)] flex flex-col">
             <CardHeader className="border-b">
               <CardTitle>Chat with Medical AI</CardTitle>
               <CardDescription>
-                Ask health-related questions and get general guidance
+                Ask health-related questions and get responses from ChatGPT
               </CardDescription>
             </CardHeader>
             
@@ -110,7 +235,11 @@ const AIChatbot: React.FC = () => {
                 message.sender === 'user' ? (
                   <UserMessage key={message.id} content={message.content} />
                 ) : (
-                  <AIMessage key={message.id} content={message.content} />
+                  <AIMessage 
+                    key={message.id} 
+                    content={message.isLoading ? "..." : message.content} 
+                    className={message.isLoading ? "opacity-70" : ""}
+                  />
                 )
               ))}
               <div ref={messagesEndRef} />
@@ -123,10 +252,14 @@ const AIChatbot: React.FC = () => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Type your medical question here..."
-                    disabled={isProcessing}
+                    disabled={isProcessing || (!apiKey && !useStoredKey)}
                     className="flex-1"
                   />
-                  <Button type="submit" disabled={isProcessing} className="shrink-0">
+                  <Button 
+                    type="submit" 
+                    disabled={isProcessing || (!apiKey && !useStoredKey)} 
+                    className="shrink-0"
+                  >
                     {isProcessing ? "Processing..." : "Send"}
                   </Button>
                 </div>
