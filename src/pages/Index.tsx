@@ -4,6 +4,7 @@ import { ImageFile, DetectionResult } from '@/types';
 import ImageUpload from '@/components/ImageUpload';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import DisclaimerBanner from '@/components/DisclaimerBanner';
+import ModelUploader from '@/components/ModelUploader';
 import { Button } from '@/components/ui/button';
 import { loadModel, detectSkinCancer, setDemoMode } from '@/services/modelService';
 import { useToast } from '@/components/ui/use-toast';
@@ -74,6 +75,11 @@ const Index: React.FC = () => {
     }
   };
 
+  const handleModelLoaded = (loaded: boolean) => {
+    setIsModelLoaded(loaded);
+    setIsDemoMode(!loaded);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
@@ -88,11 +94,15 @@ const Index: React.FC = () => {
 
         <DisclaimerBanner />
 
+        {/* Model uploader component */}
+        <ModelUploader onModelLoaded={handleModelLoaded} />
+
         {isDemoMode && (
           <Alert className="mb-6 bg-yellow-50 border-yellow-200">
             <AlertCircle className="h-4 w-4 mr-2 text-yellow-600" />
             <AlertDescription className="text-yellow-800">
               Currently running in demo mode with simulated predictions. The actual ML model is not loaded.
+              Please upload your model file above.
             </AlertDescription>
           </Alert>
         )}
@@ -141,7 +151,7 @@ const Index: React.FC = () => {
           </h2>
           <div className="text-gray-600 space-y-4">
             <p>
-              This application uses a TensorFlow Lite model trained on dermatological images 
+              This application uses a TensorFlow model trained on dermatological images 
               to detect potential signs of skin cancer. The AI model analyzes patterns, colors, 
               and textures in your uploaded skin lesion image.
             </p>
