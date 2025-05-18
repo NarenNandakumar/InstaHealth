@@ -14,21 +14,30 @@ export const useAuth = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Get user from localStorage
+  // Function to refresh user data
+  const refreshUser = () => {
     const user = getCurrentUser();
     setCurrentUser(user);
     setLoading(false);
+  };
+
+  useEffect(() => {
+    // Get user from localStorage on initial load
+    refreshUser();
     
     // Setup event listener for storage changes (for multi-tab support)
     const handleStorageChange = () => {
-      setCurrentUser(getCurrentUser());
+      refreshUser();
     };
     
     window.addEventListener('storage', handleStorageChange);
     
+    // Also listen to custom auth events
+    window.addEventListener('auth-state-changed', handleStorageChange);
+    
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('auth-state-changed', handleStorageChange);
     };
   }, []);
 
@@ -38,6 +47,7 @@ export const useAuth = () => {
     loading,
     isDoctor: currentUser?.userType === 'doctor',
     isPendingVerification: currentUser?.userType === 'doctor' && currentUser?.verificationStatus === 'pending',
-    isVerified: currentUser?.userType === 'doctor' && currentUser?.verificationStatus === 'approved'
+    isVerified: currentUser?.userType === 'doctor' && currentUser?.verificationStatus === 'approved',
+    refreshUser
   };
 };

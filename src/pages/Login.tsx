@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -7,8 +8,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
-import { login, register } from '@/services/auth';
+import { Eye, EyeOff, LogIn, UserPlus, User } from 'lucide-react';
+import { login, register, logout } from '@/services/auth';
+import { useAuth } from '@/hooks/use-auth';
 import DoctorVerification from '@/components/DoctorVerification';
 
 interface VerificationFile {
@@ -28,6 +30,7 @@ const Login: React.FC = () => {
   const [verificationFiles, setVerificationFiles] = useState<VerificationFile[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -44,7 +47,7 @@ const Login: React.FC = () => {
           title: "Success",
           description: "Logged in successfully!",
         });
-        navigate('/request-service'); // Updated to redirect to RequestService
+        navigate('/request-service'); 
       } else {
         toast({
           title: "Error",
@@ -95,7 +98,7 @@ const Login: React.FC = () => {
             ? "Account created! Your doctor verification is pending review." 
             : "Account created successfully!",
         });
-        navigate('/request-service'); // Updated to redirect to RequestService
+        navigate('/request-service');
       } else {
         toast({
           title: "Error",
@@ -122,6 +125,65 @@ const Login: React.FC = () => {
     }
   };
 
+  const handleLogout = async () => {
+    const success = await logout();
+    if (success) {
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+      });
+      // Force a page refresh to ensure the UI updates
+      window.location.reload();
+    }
+  };
+
+  // If user is already logged in, show their information instead of login form
+  if (user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-center">
+              Account Information
+            </CardTitle>
+            <CardDescription className="text-center">
+              You are currently logged in
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex justify-center mb-6">
+              <div className="h-24 w-24 rounded-full bg-blue-100 flex items-center justify-center">
+                <User className="h-12 w-12 text-blue-600" />
+              </div>
+            </div>
+            
+            <div className="space-y-2 text-center">
+              <h3 className="font-medium">Email</h3>
+              <p className="text-gray-700">{user.email}</p>
+            </div>
+            
+            <div className="space-y-2 text-center">
+              <h3 className="font-medium">Account Type</h3>
+              <p className="text-gray-700 capitalize">{user.userType}</p>
+              {user.userType === 'doctor' && user.verificationStatus && (
+                <p className="text-sm text-gray-500">
+                  Verification Status: <span className="capitalize">{user.verificationStatus}</span>
+                </p>
+              )}
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-center">
+            <Button onClick={handleLogout} className="w-full max-w-xs">
+              Logout
+              <LogIn className="ml-2 h-4 w-4" />
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
+  // Original login form if user is not logged in
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
