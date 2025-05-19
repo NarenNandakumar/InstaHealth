@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Home: React.FC = () => {
   return (
@@ -14,6 +15,23 @@ const Home: React.FC = () => {
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Modern healthcare solutions at your fingertips, providing instant access to medical analysis and professional consultations.
           </p>
+        </div>
+
+        {/* Hero Image Section */}
+        <div className="mb-16 overflow-hidden rounded-2xl shadow-xl">
+          <div className="relative">
+            <img 
+              src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+              alt="Doctor with patient" 
+              className="w-full h-[400px] object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/70 to-transparent flex items-center">
+              <div className="p-8 text-white max-w-lg">
+                <h2 className="text-3xl font-bold mb-4">Compassionate Care When You Need It Most</h2>
+                <p className="text-lg">Our network of healthcare professionals is committed to providing personalized care with empathy and understanding.</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 mb-16">
@@ -52,6 +70,48 @@ const Home: React.FC = () => {
           </div>
         </div>
 
+        {/* Caring Professionals Cards */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Our Caring Approach</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card className="overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1584516150854-d40a5e1d91b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                alt="Doctor with patient" 
+                className="w-full h-48 object-cover"
+              />
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold mb-2">Personalized Care</h3>
+                <p className="text-gray-600">Every patient receives individualized attention tailored to their unique health needs.</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                alt="Medical team discussion" 
+                className="w-full h-48 object-cover"
+              />
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold mb-2">Expert Collaboration</h3>
+                <p className="text-gray-600">Our healthcare professionals work together to provide comprehensive treatment plans.</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                alt="Supportive healthcare" 
+                className="w-full h-48 object-cover"
+              />
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold mb-2">Compassionate Support</h3>
+                <p className="text-gray-600">We're here for you every step of the way with empathetic and supportive care.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
         <div className="bg-blue-50 rounded-xl p-8 mb-16">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">How It Works</h2>
           
@@ -78,6 +138,28 @@ const Home: React.FC = () => {
               </div>
               <h3 className="text-xl font-semibold mb-3">Get Results</h3>
               <p className="text-gray-600">Receive instant AI analysis or expert medical advice from our healthcare professionals.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Testimonial Section with Caring Image */}
+        <div className="mb-16 bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="grid md:grid-cols-2">
+            <div className="p-8 flex items-center">
+              <div>
+                <h3 className="text-2xl font-bold mb-4 text-blue-600">Patient Stories</h3>
+                <blockquote className="text-gray-600 italic mb-6">
+                  "The compassion and care I received through InstaHealth was extraordinary. The doctors truly listened to my concerns and provided thoughtful advice that made all the difference."
+                </blockquote>
+                <div className="font-semibold">- Sarah M., InstaHealth Patient</div>
+              </div>
+            </div>
+            <div>
+              <img 
+                src="https://images.unsplash.com/photo-1571772996211-2f02c9727629?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                alt="Doctor listening to patient" 
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         </div>
