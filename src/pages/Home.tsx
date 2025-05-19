@@ -16,12 +16,12 @@ const Home: React.FC = () => {
           </p>
         </div>
 
-        {/* Hero Image Section with doctor caring for patient */}
+        {/* Hero Image Section with compassionate care image */}
         <div className="mb-16 overflow-hidden rounded-2xl shadow-xl">
           <div className="relative">
             <img 
-              src="https://images.unsplash.com/photo-1551076805-e1869033e561?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
-              alt="Doctor caring for patient" 
+              src="/lovable-uploads/733a51df-f918-4ab5-a977-8e5987bdbee8.png" 
+              alt="Compassionate care with healthcare provider and patient" 
               className="w-full h-[400px] object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/70 to-transparent flex items-center">
@@ -99,7 +99,7 @@ const Home: React.FC = () => {
             
             <Card className="overflow-hidden">
               <img 
-                src="https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                src="https://images.unsplash.com/photo-1472396961693-142e6e269027?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
                 alt="Supportive healthcare" 
                 className="w-full h-48 object-cover"
               />
@@ -141,7 +141,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Healthcare Access Mission Section - Replacing Testimonial */}
+        {/* Healthcare Access Mission Section */}
         <div className="mb-16 bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="grid md:grid-cols-2">
             <div className="p-8 flex items-center">
