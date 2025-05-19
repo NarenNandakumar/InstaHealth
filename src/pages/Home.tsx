@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -76,7 +75,7 @@ const Home: React.FC = () => {
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="overflow-hidden">
               <img 
-                src="https://images.unsplash.com/photo-1571824655949-e9dad040ea16?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
                 alt="Doctor with patient" 
                 className="w-full h-48 object-cover"
               />
@@ -214,4 +213,3 @@ const Home: React.FC = () => {
 };
 
 export default Home;
-
