@@ -4,10 +4,14 @@ import { getApiKey } from '@/components/ApiKeyInput';
 // OpenAI API endpoint and configuration
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 const OPENAI_MODEL = 'gpt-4o'; // Using GPT-4o with vision capabilities
+const DEFAULT_API_KEY = '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';
 
-// Function to get the current API key or fallback to demo mode
-const getCurrentApiKey = (): string | null => {
-  return getApiKey();
+// Function to get the current API key or fallback to demo key
+const getCurrentApiKey = (): string => {
+  // First try to get the key from localStorage
+  const storedKey = getApiKey();
+  // If no key in storage, use the default key
+  return storedKey || DEFAULT_API_KEY;
 };
 
 // Function to convert image to base64 for API
@@ -43,9 +47,6 @@ const imageToBase64 = (imgElement: HTMLImageElement): Promise<string> => {
 export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<DetectionResult> => {
   try {
     const apiKey = getCurrentApiKey();
-    if (!apiKey) {
-      throw new Error('API key not found. Please add your OpenAI API key in settings.');
-    }
     
     // Convert the image to base64
     const base64Image = await imageToBase64(imageElement);
@@ -146,9 +147,6 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
 export const detectEczema = async (imageElement: HTMLImageElement): Promise<DetectionResult> => {
   try {
     const apiKey = getCurrentApiKey();
-    if (!apiKey) {
-      throw new Error('API key not found. Please add your OpenAI API key in settings.');
-    }
     
     // Convert the image to base64
     const base64Image = await imageToBase64(imageElement);

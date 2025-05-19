@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Key, Save, Trash2 } from 'lucide-react';
+import { Key, Save, Trash2, CheckCircle } from 'lucide-react';
 
 export const getApiKey = (): string | null => {
   return localStorage.getItem('openai_api_key');
@@ -59,7 +59,7 @@ const ApiKeyInput: React.FC = () => {
     
     toast({
       title: 'API Key Removed',
-      description: 'Your OpenAI API key has been removed from browser storage.',
+      description: 'Your OpenAI API key has been removed from browser storage. Using default API key now.',
     });
   };
 
@@ -75,11 +75,18 @@ const ApiKeyInput: React.FC = () => {
           OpenAI API Key
         </CardTitle>
         <CardDescription>
-          Enter your OpenAI API key to use the skin analysis tools. 
+          Enter your OpenAI API key to use the skin analysis tools, or use our default key.
           Your key is stored only in your browser and never sent to our servers.
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="mb-4 bg-green-50 p-3 rounded-md border border-green-100 flex items-start gap-2">
+          <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+          <div className="text-sm text-green-700">
+            A default API key is available for demonstration purposes. You can use it directly,
+            or enter your own key for higher limits and better performance.
+          </div>
+        </div>
         <div className="flex items-center gap-2">
           <Input
             type="password"

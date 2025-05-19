@@ -7,7 +7,7 @@ import ApiKeyInput, { getApiKey } from '@/components/ApiKeyInput';
 import { Button } from '@/components/ui/button';
 import { detectSkinCancer, detectEczema } from '@/services/modelService';
 import { useToast } from '@/hooks/use-toast';
-import { AlertCircle, Scan, Heart, Brain, FlaskConical, BadgePlus, ActivitySquare, KeyRound } from 'lucide-react';
+import { AlertCircle, Scan, Heart, Brain, FlaskConical, BadgePlus, ActivitySquare, KeyRound, Info } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -15,7 +15,7 @@ const SkinCancerDetection: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
   const [result, setResult] = useState<DetectionResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [hasApiKey, setHasApiKey] = useState<boolean>(false);
+  const [hasCustomApiKey, setHasCustomApiKey] = useState<boolean>(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("skin-cancer");
@@ -27,10 +27,10 @@ const SkinCancerDetection: React.FC = () => {
     checkApiKey();
   }, [selectedImage, activeTab]);
   
-  // Check if API key exists
+  // Check if custom API key exists
   const checkApiKey = () => {
     const key = getApiKey();
-    setHasApiKey(!!key);
+    setHasCustomApiKey(!!key);
   };
 
   const handleAnalyzeImage = async () => {
@@ -38,16 +38,6 @@ const SkinCancerDetection: React.FC = () => {
       toast({
         title: 'No Image Selected',
         description: 'Please upload an image to analyze.',
-        variant: 'destructive',
-      });
-      return;
-    }
-    
-    if (!hasApiKey) {
-      setShowApiKeyInput(true);
-      toast({
-        title: 'API Key Required',
-        description: 'Please add your OpenAI API key before analyzing images.',
         variant: 'destructive',
       });
       return;
@@ -104,7 +94,7 @@ const SkinCancerDetection: React.FC = () => {
 
   const AnalysisContent = () => (
     <>
-      {showApiKeyInput || !hasApiKey ? (
+      {showApiKeyInput ? (
         <div className="mb-6">
           <ApiKeyInput />
           <div className="mt-4 text-center">
@@ -133,9 +123,19 @@ const SkinCancerDetection: React.FC = () => {
                 onClick={() => setShowApiKeyInput(true)}
               >
                 <KeyRound className="h-3 w-3" />
-                Change API Key
+                {hasCustomApiKey ? 'Change API Key' : 'Use Custom API Key'}
               </Button>
             </div>
+            
+            {!hasCustomApiKey && (
+              <div className="bg-blue-50 p-3 rounded-md border border-blue-100 flex items-start gap-2 mb-4">
+                <Info className="h-5 w-5 text-blue-500 mt-0.5" />
+                <p className="text-sm text-blue-700">
+                  Currently using the default API key. You can use your own OpenAI API key for higher request limits.
+                </p>
+              </div>
+            )}
+            
             <p className="text-sm text-gray-600 mb-4">
               For best results, upload a well-lit, close-up photo against a neutral background.
             </p>
@@ -220,7 +220,8 @@ const SkinCancerDetection: React.FC = () => {
                   evaluating factors such as asymmetry, border irregularity, color variation, and diameter.
                 </p>
                 <p>
-                  <strong>Note:</strong> This tool requires your own OpenAI API key. Your key is stored only in your browser 
+                  <strong>Note:</strong> A default API key is provided for demonstration purposes, but you can also use your own OpenAI API key for 
+                  higher request limits and dedicated usage. Your key is stored only in your browser 
                   and never transmitted to our servers or saved in our codebase.
                 </p>
                 <p>
@@ -249,7 +250,8 @@ const SkinCancerDetection: React.FC = () => {
                   including redness, dryness, inflammation, and other characteristic patterns.
                 </p>
                 <p>
-                  <strong>Note:</strong> This tool requires your own OpenAI API key. Your key is stored only in your browser 
+                  <strong>Note:</strong> A default API key is provided for demonstration purposes, but you can also use your own OpenAI API key for 
+                  higher request limits and dedicated usage. Your key is stored only in your browser 
                   and never transmitted to our servers or saved in our codebase.
                 </p>
                 <p>
