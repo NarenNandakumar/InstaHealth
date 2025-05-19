@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { detectSkinCancer } from '@/services/modelService';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Scan, Heart, Brain, Microscope, Flask, BadgePlus } from 'lucide-react';
+import { AlertCircle, Scan, Heart, Brain, FlaskConical, BadgePlus } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -101,7 +101,7 @@ const SkinCancerDetection: React.FC = () => {
               <span>Brain Scan</span>
             </TabsTrigger>
             <TabsTrigger value="lab-results" className="flex items-center gap-2">
-              <Flask className="h-4 w-4" />
+              <FlaskConical className="h-4 w-4" />
               <span>Lab Results</span>
             </TabsTrigger>
           </TabsList>
@@ -200,7 +200,7 @@ const SkinCancerDetection: React.FC = () => {
           <TabsContent value="lab-results">
             <ComingSoonCard 
               title="Lab Results Interpreter"
-              icon={Flask}
+              icon={FlaskConical}
               description="Upload your lab test results for AI interpretation and explanation in simple terms."
             />
           </TabsContent>
