@@ -20,7 +20,7 @@ const Home: React.FC = () => {
         <div className="mb-16 overflow-hidden rounded-2xl shadow-xl">
           <div className="relative">
             <img 
-              src="/lovable-uploads/733a51df-f918-4ab5-a977-8e5987bdbee8.png" 
+              src="/lovable-uploads/care.png" 
               alt="Compassionate care with healthcare provider and patient" 
               className="w-full h-[400px] object-cover"
             />
