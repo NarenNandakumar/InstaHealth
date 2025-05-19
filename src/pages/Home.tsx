@@ -75,7 +75,7 @@ const Home: React.FC = () => {
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="overflow-hidden">
               <img 
-                src="/lovable-uploads/bd00739d-1eab-4a2d-96c8-1a7dbe295539.png" 
+                src="/lovable-uploads/ea72e0bd-4ddc-4d8e-9ab8-cf537cbbbac4.png" 
                 alt="Personalized Care" 
                 className="w-full h-48 object-cover"
               />
@@ -99,7 +99,7 @@ const Home: React.FC = () => {
             
             <Card className="overflow-hidden">
               <img 
-                src="/lovable-uploads/bd00739d-1eab-4a2d-96c8-1a7dbe295539.png" 
+                src="/lovable-uploads/9ea4a2ea-8e82-45f9-9221-68d514659485.png" 
                 alt="Compassionate Support" 
                 className="w-full h-48 object-cover"
               />
