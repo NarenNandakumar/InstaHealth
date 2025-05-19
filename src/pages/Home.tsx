@@ -99,7 +99,7 @@ const Home: React.FC = () => {
             
             <Card className="overflow-hidden">
               <img 
-                src="/lovable-uploads/9ea4a2ea-8e82-45f9-9221-68d514659485.png" 
+                src="/lovable-uploads/heart.png" 
                 alt="Compassionate Support" 
                 className="w-full h-48 object-cover"
               />
