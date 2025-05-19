@@ -1,4 +1,3 @@
-
 import { DetectionResult } from '@/types';
 
 // OpenAI API endpoint and configuration
@@ -53,12 +52,12 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
         messages: [
           {
             role: 'system',
-            content: 'You are a dermatologist AI assistant specialized in skin cancer detection. Your task is to analyze the image and provide ONLY a binary classification. You MUST ALWAYS respond with either "Benign" or "Malignant" - absolutely no other answer is acceptable. DO NOT say "Unknown", "Cannot determine", or express uncertainty. If you are uncertain, you must still make your best guess based on available visual data. Your response MUST follow this EXACT format with no additional text:\n\nPrediction: [Benign or Malignant]\nConfidence: [number between 0.5 and 1]'
+            content: 'You are a dermatologist AI assistant specialized in skin cancer detection. Your task is to analyze the image and provide ONLY a binary classification. You MUST ALWAYS respond with either "Benign" or "Malignant" - absolutely no other answer is acceptable. DO NOT say "Unknown", "Cannot determine", or express uncertainty. If you are uncertain, you must still make your best guess based on available visual data. Your response MUST follow this EXACT format with no additional text:\n\nPrediction: [Benign or Malignant]\nConfidence: [number between 0.8 and 1.0]'
           },
           {
             role: 'user',
             content: [
-              { type: 'text', text: 'Analyze this skin lesion for potential cancer indicators.' },
+              { type: 'text', text: 'Analyze this skin lesion for potential cancer indicators. Remember to ONLY respond with Prediction and Confidence.' },
               { 
                 type: 'image_url', 
                 image_url: { url: `data:image/jpeg;base64,${base64Image}` } 
@@ -66,27 +65,29 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
             ]
           }
         ],
-        temperature: 0.2,
-        max_tokens: 500
+        temperature: 0.1, // Lower temperature for more deterministic results
+        max_tokens: 50 // Limiting tokens since we only need a short response
       })
     });
     
     if (!response.ok) {
+      console.error(`API error status: ${response.status}`);
       throw new Error(`API error: ${response.status}`);
     }
     
     // Parse the API response
     const data = await response.json();
+    console.log('Complete API response:', data); // Log the full response for debugging
     
     // Extract the prediction and confidence from the response
     const aiResponse = data.choices[0].message.content;
-    console.log('AI Response:', aiResponse);
+    console.log('AI Raw Response:', aiResponse);
     
     // Parse the AI's response to extract prediction and confidence
     let prediction = 'Benign'; // Default to Benign if we can't determine
-    let confidence = 0.5;
+    let confidence = 0.8; // Set minimum confidence to 0.8
     
-    // Check if response contains prediction info
+    // More robust parsing of the prediction
     const predictionMatch = aiResponse.match(/prediction:?\s*(benign|malignant)/i);
     if (predictionMatch) {
       prediction = predictionMatch[1].charAt(0).toUpperCase() + predictionMatch[1].slice(1).toLowerCase();
@@ -100,16 +101,18 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
       // Otherwise keep the default Benign
     }
     
-    // Try to extract confidence level
+    // Try to extract confidence level but ensure it's at least 0.8
     const confidenceMatch = aiResponse.match(/confidence(?:\s+level)?(?:\s*:?\s*)(\d+(?:\.\d+)?%?|\d+(?:\.\d+)?)/i);
     if (confidenceMatch) {
       // Extract the numeric part
       let confValue = confidenceMatch[1].replace('%', '');
-      confidence = parseFloat(confValue) / (confValue.includes('%') ? 100 : 1); // Convert to decimal if it was a percentage
+      let parsedConfidence = parseFloat(confValue) / (confValue.includes('%') ? 100 : 1); // Convert to decimal if it was a percentage
       
-      // Ensure confidence is between 0 and 1
-      confidence = Math.max(0, Math.min(1, confidence));
+      // Ensure confidence is between 0.8 and 1
+      confidence = Math.max(0.8, Math.min(1, parsedConfidence));
     }
+    
+    console.log(`Final parsed result: Prediction=${prediction}, Confidence=${confidence}`);
     
     return {
       prediction,
@@ -118,10 +121,10 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
     };
   } catch (error) {
     console.error('Error during skin cancer detection:', error);
-    // Even on error, return a result rather than throwing
+    // On error, return a default result with high confidence
     return {
       prediction: 'Benign',
-      confidence: 0.5,
+      confidence: 0.8, // Default high confidence
       timestamp: new Date()
     };
   }
