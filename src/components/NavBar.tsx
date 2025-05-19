@@ -61,6 +61,17 @@ const NavBar: React.FC = () => {
               <span>Analysis</span>
             </Link>
             <Link 
+              to="/resources" 
+              className={`px-2 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/resources' 
+                  ? 'text-blue-700 bg-blue-50'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <Book className="h-4 w-4 inline" />
+              <span className="ml-1">Resources</span>
+            </Link>
+            <Link 
               to="/health-plan" 
               className={`px-2 py-2 rounded-md text-sm font-medium ${
                 location.pathname === '/health-plan' 
@@ -82,28 +93,6 @@ const NavBar: React.FC = () => {
               <span>Services</span>
             </Link>
             <Link 
-              to="/ai-chatbot" 
-              className={`px-2 py-2 rounded-md text-sm font-medium ${
-                location.pathname === '/ai-chatbot' 
-                  ? 'text-blue-700 bg-blue-50'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              <Bot className="h-4 w-4 inline" />
-              <span className="ml-1">AI Chat</span>
-            </Link>
-            <Link 
-              to="/resources" 
-              className={`px-2 py-2 rounded-md text-sm font-medium ${
-                location.pathname === '/resources' 
-                  ? 'text-blue-700 bg-blue-50'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              <Book className="h-4 w-4 inline" />
-              <span className="ml-1">Resources</span>
-            </Link>
-            <Link 
               to="/accessibility" 
               className={`px-2 py-2 rounded-md text-sm font-medium ${
                 location.pathname === '/accessibility' 
@@ -113,6 +102,17 @@ const NavBar: React.FC = () => {
             >
               <Settings className="h-4 w-4 inline" />
               <span className="ml-1">Accessibility</span>
+            </Link>
+            <Link 
+              to="/ai-chatbot" 
+              className={`px-2 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/ai-chatbot' 
+                  ? 'text-blue-700 bg-blue-50'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <Bot className="h-4 w-4 inline" />
+              <span className="ml-1">AI Chat</span>
             </Link>
           </div>
           

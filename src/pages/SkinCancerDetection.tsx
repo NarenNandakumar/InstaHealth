@@ -1,13 +1,13 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { ImageFile, DetectionResult } from '@/types';
 import ImageUpload from '@/components/ImageUpload';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import DisclaimerBanner from '@/components/DisclaimerBanner';
-import ApiKeyInput, { getApiKey } from '@/components/ApiKeyInput';
 import { Button } from '@/components/ui/button';
 import { detectSkinCancer, detectEczema } from '@/services/modelService';
 import { useToast } from '@/hooks/use-toast';
-import { AlertCircle, Scan, Heart, Brain, FlaskConical, BadgePlus, ActivitySquare, KeyRound, Info } from 'lucide-react';
+import { AlertCircle, Scan, Heart, Brain, FlaskConical, BadgePlus, ActivitySquare } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -15,23 +15,14 @@ const SkinCancerDetection: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
   const [result, setResult] = useState<DetectionResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [hasCustomApiKey, setHasCustomApiKey] = useState<boolean>(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("skin-cancer");
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
 
-  // Check for API key and reset result when image changes or tab changes
+  // Reset result when image changes or tab changes
   useEffect(() => {
     setResult(null);
-    checkApiKey();
   }, [selectedImage, activeTab]);
-  
-  // Check if custom API key exists
-  const checkApiKey = () => {
-    const key = getApiKey();
-    setHasCustomApiKey(!!key);
-  };
 
   const handleAnalyzeImage = async () => {
     if (!selectedImage || !imageRef.current) {
@@ -55,16 +46,12 @@ const SkinCancerDetection: React.FC = () => {
         throw new Error('Invalid tab selected');
       }
       
-      if (detectionResult.error) {
-        throw new Error(detectionResult.error);
-      }
-      
       setResult(detectionResult);
     } catch (error) {
       console.error('Error analyzing image:', error);
       toast({
         title: 'Analysis Error',
-        description: error instanceof Error ? error.message : 'Failed to analyze the image. Please try again.',
+        description: 'Failed to analyze the image. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -94,81 +81,41 @@ const SkinCancerDetection: React.FC = () => {
 
   const AnalysisContent = () => (
     <>
-      {showApiKeyInput ? (
-        <div className="mb-6">
-          <ApiKeyInput />
-          <div className="mt-4 text-center">
-            <Button 
-              onClick={() => {
-                checkApiKey();
-                setShowApiKeyInput(false);
-              }} 
-              variant="outline"
-            >
-              Continue
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <>
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-xl font-semibold text-gray-800">
-                Upload an Image
-              </h2>
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-1"
-                onClick={() => setShowApiKeyInput(true)}
-              >
-                <KeyRound className="h-3 w-3" />
-                {hasCustomApiKey ? 'Change API Key' : 'Use Custom API Key'}
-              </Button>
-            </div>
-            
-            {!hasCustomApiKey && (
-              <div className="bg-blue-50 p-3 rounded-md border border-blue-100 flex items-start gap-2 mb-4">
-                <Info className="h-5 w-5 text-blue-500 mt-0.5" />
-                <p className="text-sm text-blue-700">
-                  Currently using the default API key. You can use your own OpenAI API key for higher request limits.
-                </p>
-              </div>
-            )}
-            
-            <p className="text-sm text-gray-600 mb-4">
-              For best results, upload a well-lit, close-up photo against a neutral background.
-            </p>
-            <ImageUpload 
-              onImageSelect={setSelectedImage} 
-              selectedImage={selectedImage} 
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-gray-800 mb-2">
+          Upload an Image
+        </h2>
+        <p className="text-sm text-gray-600 mb-4">
+          For best results, upload a well-lit, close-up photo against a neutral background.
+        </p>
+        <ImageUpload 
+          onImageSelect={setSelectedImage} 
+          selectedImage={selectedImage} 
+        />
+        {selectedImage && (
+          <div className="hidden">
+            <img 
+              ref={imageRef}
+              src={selectedImage.preview}
+              alt="Selected for analysis"
+              crossOrigin="anonymous"
             />
-            {selectedImage && (
-              <div className="hidden">
-                <img 
-                  ref={imageRef}
-                  src={selectedImage.preview}
-                  alt="Selected for analysis"
-                  crossOrigin="anonymous"
-                />
-              </div>
-            )}
           </div>
+        )}
+      </div>
 
-          <div className="flex justify-center mb-6">
-            <Button 
-              onClick={handleAnalyzeImage} 
-              disabled={!selectedImage || isLoading}
-              className="px-6 py-2"
-              size="lg"
-            >
-              {isLoading ? 'Analyzing...' : 'Analyze Image'}
-            </Button>
-          </div>
+      <div className="flex justify-center mb-6">
+        <Button 
+          onClick={handleAnalyzeImage} 
+          disabled={!selectedImage || isLoading}
+          className="px-6 py-2"
+          size="lg"
+        >
+          {isLoading ? 'Analyzing...' : 'Analyze Image'}
+        </Button>
+      </div>
 
-          <ResultsDisplay result={result} isLoading={isLoading} />
-        </>
-      )}
+      <ResultsDisplay result={result} isLoading={isLoading} />
     </>
   );
 
@@ -216,18 +163,17 @@ const SkinCancerDetection: React.FC = () => {
               </h2>
               <div className="text-gray-600 space-y-4">
                 <p>
-                  This application uses OpenAI's GPT-4o to analyze skin lesions for potential signs of skin cancer,
+                  This application uses advanced AI to analyze skin lesions for potential signs of skin cancer,
                   evaluating factors such as asymmetry, border irregularity, color variation, and diameter.
-                </p>
-                <p>
-                  <strong>Note:</strong> A default API key is provided for demonstration purposes, but you can also use your own OpenAI API key for 
-                  higher request limits and dedicated usage. Your key is stored only in your browser 
-                  and never transmitted to our servers or saved in our codebase.
                 </p>
                 <p>
                   <strong>Important:</strong> This tool is not a substitute for professional medical 
                   diagnosis. If you have concerns about a skin lesion, please consult a dermatologist 
                   immediately.
+                </p>
+                <p>
+                  Early detection of skin cancer significantly improves treatment outcomes. 
+                  Regular skin self-examinations and professional check-ups are recommended.
                 </p>
               </div>
             </div>
@@ -246,18 +192,17 @@ const SkinCancerDetection: React.FC = () => {
               </h2>
               <div className="text-gray-600 space-y-4">
                 <p>
-                  This application uses OpenAI's GPT-4o to analyze skin conditions for signs of eczema,
+                  This application uses advanced AI to analyze skin conditions for signs of eczema,
                   including redness, dryness, inflammation, and other characteristic patterns.
-                </p>
-                <p>
-                  <strong>Note:</strong> A default API key is provided for demonstration purposes, but you can also use your own OpenAI API key for 
-                  higher request limits and dedicated usage. Your key is stored only in your browser 
-                  and never transmitted to our servers or saved in our codebase.
                 </p>
                 <p>
                   <strong>Important:</strong> This tool is not a substitute for professional medical 
                   diagnosis. If you have concerns about your skin condition, please consult a dermatologist 
                   immediately.
+                </p>
+                <p>
+                  Early management of eczema can significantly improve comfort and prevent flare-ups.
+                  A proper skin care routine and avoiding triggers are essential parts of eczema management.
                 </p>
               </div>
             </div>

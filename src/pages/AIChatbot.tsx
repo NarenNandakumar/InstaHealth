@@ -42,8 +42,8 @@ const AIChatbot: React.FC = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [isLoadingDoctors, setIsLoadingDoctors] = useState(false);
   
-  // Default API key
-  const apiKey = "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";
+  // Hardcoded API key (as requested by the user)
+  const apiKey = "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";
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
