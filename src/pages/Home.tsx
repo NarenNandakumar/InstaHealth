@@ -21,7 +21,7 @@ const Home: React.FC = () => {
         <div className="mb-16 overflow-hidden rounded-2xl shadow-xl">
           <div className="relative">
             <img 
-              src="https://images.unsplash.com/photo-1584516150854-d40a5e1d91b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+              src="https://images.unsplash.com/photo-1551076805-e1869033e561?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
               alt="Doctor caring for patient" 
               className="w-full h-[400px] object-cover"
             />
@@ -76,7 +76,7 @@ const Home: React.FC = () => {
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="overflow-hidden">
               <img 
-                src="https://images.unsplash.com/photo-1584516150854-d40a5e1d91b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                src="https://images.unsplash.com/photo-1571824655949-e9dad040ea16?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
                 alt="Doctor with patient" 
                 className="w-full h-48 object-cover"
               />
@@ -100,7 +100,7 @@ const Home: React.FC = () => {
             
             <Card className="overflow-hidden">
               <img 
-                src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                src="https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
                 alt="Supportive healthcare" 
                 className="w-full h-48 object-cover"
               />
@@ -182,7 +182,7 @@ const Home: React.FC = () => {
             </div>
             <div>
               <img 
-                src="https://images.unsplash.com/photo-1571772996211-2f02c9727629?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                src="https://images.unsplash.com/photo-1551601651-bc60f254d532?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
                 alt="Doctor with diverse group of patients" 
                 className="w-full h-full object-cover"
               />
@@ -214,3 +214,4 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
