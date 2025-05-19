@@ -32,10 +32,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result, isLoading }) =>
     return null;
   }
 
-  // Always show confidence as >80% regardless of actual value
-  const displayConfidence = Math.max(0.8, Math.random() * 0.15 + 0.8);
-  const confidencePercent = (displayConfidence * 100).toFixed(2);
-  
+  const confidencePercent = (result.confidence * 100).toFixed(2);
   const isMalignant = result.prediction === 'Malignant';
   const resultColor = isMalignant ? 'text-red-600' : 'text-green-600';
   const progressColor = isMalignant ? 'bg-red-600' : 'bg-green-600';
