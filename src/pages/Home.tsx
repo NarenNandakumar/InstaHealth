@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -22,13 +23,13 @@ const Home: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Skin Cancer Detection</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">AI-Powered Disease Analysis</h2>
             <p className="text-gray-600 mb-6">
-              Our advanced AI technology analyses images of skin lesions to help identify potential signs of skin cancer using the ABCD method, providing quick preliminary assessments.
+              Our advanced AI technology analyzes medical images to detect potential health concerns with remarkable accuracy, providing quick preliminary assessments when you need them most.
             </p>
             <Link to="/home">
               <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                Try Skin Analysis
+                Try Image Analysis
               </Button>
             </Link>
           </div>
@@ -68,7 +69,7 @@ const Home: React.FC = () => {
                 <span className="text-2xl font-bold text-blue-600">2</span>
               </div>
               <h3 className="text-xl font-semibold mb-3">Choose a Service</h3>
-              <p className="text-gray-600">Select between skin analysis or request a consultation with a medical professional.</p>
+              <p className="text-gray-600">Select between AI image analysis or request a consultation with a medical professional.</p>
             </div>
             
             <div className="text-center">
@@ -89,7 +90,7 @@ const Home: React.FC = () => {
           <div className="flex justify-center space-x-4">
             <Link to="/home">
               <Button variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-blue-800">
-                Try Skin Analysis
+                Try Image Analysis
               </Button>
             </Link>
             <Link to="/request-service">
