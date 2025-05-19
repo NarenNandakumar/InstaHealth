@@ -132,7 +132,7 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
     };
   } catch (error) {
     console.error('Error during skin cancer detection:', error);
-    // On error, return a default result with high confidence
+    // Return a properly typed error result
     return {
       prediction: 'Error',
       confidence: 0,
@@ -234,7 +234,7 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
     };
   } catch (error) {
     console.error('Error during eczema detection:', error);
-    // On error, return a default result with high confidence
+    // Return a properly typed error result
     return {
       prediction: 'Error',
       confidence: 0,
