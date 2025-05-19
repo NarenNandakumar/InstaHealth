@@ -5,9 +5,9 @@ import ImageUpload from '@/components/ImageUpload';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import DisclaimerBanner from '@/components/DisclaimerBanner';
 import { Button } from '@/components/ui/button';
-import { detectSkinCancer } from '@/services/modelService';
+import { detectSkinCancer, detectEczema } from '@/services/modelService';
 import { useToast } from '@/hooks/use-toast';
-import { AlertCircle, Scan, Heart, Brain, FlaskConical, BadgePlus } from 'lucide-react';
+import { AlertCircle, Scan, Heart, Brain, FlaskConical, BadgePlus, ActivitySquare } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -19,10 +19,10 @@ const SkinCancerDetection: React.FC = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("skin-cancer");
 
-  // Reset result when image changes
+  // Reset result when image changes or tab changes
   useEffect(() => {
     setResult(null);
-  }, [selectedImage]);
+  }, [selectedImage, activeTab]);
 
   const handleAnalyzeImage = async () => {
     if (!selectedImage || !imageRef.current) {
@@ -37,7 +37,15 @@ const SkinCancerDetection: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const detectionResult = await detectSkinCancer(imageRef.current);
+      let detectionResult;
+      if (activeTab === 'skin-cancer') {
+        detectionResult = await detectSkinCancer(imageRef.current);
+      } else if (activeTab === 'eczema') {
+        detectionResult = await detectEczema(imageRef.current);
+      } else {
+        throw new Error('Invalid tab selected');
+      }
+      
       setResult(detectionResult);
     } catch (error) {
       console.error('Error analyzing image:', error);
@@ -71,6 +79,46 @@ const SkinCancerDetection: React.FC = () => {
     </Card>
   );
 
+  const AnalysisContent = () => (
+    <>
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-gray-800 mb-2">
+          Upload an Image
+        </h2>
+        <p className="text-sm text-gray-600 mb-4">
+          For best results, upload a well-lit, close-up photo against a neutral background.
+        </p>
+        <ImageUpload 
+          onImageSelect={setSelectedImage} 
+          selectedImage={selectedImage} 
+        />
+        {selectedImage && (
+          <div className="hidden">
+            <img 
+              ref={imageRef}
+              src={selectedImage.preview}
+              alt="Selected for analysis"
+              crossOrigin="anonymous"
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="flex justify-center mb-6">
+        <Button 
+          onClick={handleAnalyzeImage} 
+          disabled={!selectedImage || isLoading}
+          className="px-6 py-2"
+          size="lg"
+        >
+          {isLoading ? 'Analyzing...' : 'Analyze Image'}
+        </Button>
+      </div>
+
+      <ResultsDisplay result={result} isLoading={isLoading} />
+    </>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
@@ -79,10 +127,14 @@ const SkinCancerDetection: React.FC = () => {
         </h1>
         
         <Tabs defaultValue="skin-cancer" className="w-full mb-8" onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-4 w-full mb-6">
+          <TabsList className="grid grid-cols-5 w-full mb-6">
             <TabsTrigger value="skin-cancer" className="flex items-center gap-2">
               <Scan className="h-4 w-4" />
               <span>Skin Cancer</span>
+            </TabsTrigger>
+            <TabsTrigger value="eczema" className="flex items-center gap-2">
+              <ActivitySquare className="h-4 w-4" />
+              <span>Eczema</span>
             </TabsTrigger>
             <TabsTrigger value="heart-health" className="flex items-center gap-2">
               <Heart className="h-4 w-4" />
@@ -102,41 +154,7 @@ const SkinCancerDetection: React.FC = () => {
             <DisclaimerBanner />
 
             <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                  Upload an Image
-                </h2>
-                <p className="text-sm text-gray-600 mb-4">
-                  For best results, upload a well-lit, close-up photo of the skin lesion against a neutral background.
-                </p>
-                <ImageUpload 
-                  onImageSelect={setSelectedImage} 
-                  selectedImage={selectedImage} 
-                />
-                {selectedImage && (
-                  <div className="hidden">
-                    <img 
-                      ref={imageRef}
-                      src={selectedImage.preview}
-                      alt="Selected for analysis"
-                      crossOrigin="anonymous"
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div className="flex justify-center mb-6">
-                <Button 
-                  onClick={handleAnalyzeImage} 
-                  disabled={!selectedImage || isLoading}
-                  className="px-6 py-2"
-                  size="lg"
-                >
-                  {isLoading ? 'Analyzing...' : 'Analyze Image'}
-                </Button>
-              </div>
-
-              <ResultsDisplay result={result} isLoading={isLoading} />
+              <AnalysisContent />
             </div>
 
             <div className="bg-white shadow-md rounded-lg p-6">
@@ -156,6 +174,35 @@ const SkinCancerDetection: React.FC = () => {
                 <p>
                   Early detection of skin cancer significantly improves treatment outcomes. 
                   Regular skin self-examinations and professional check-ups are recommended.
+                </p>
+              </div>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="eczema">
+            <DisclaimerBanner />
+
+            <div className="bg-white shadow-md rounded-lg p-6 mb-8">
+              <AnalysisContent />
+            </div>
+
+            <div className="bg-white shadow-md rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                About This Tool
+              </h2>
+              <div className="text-gray-600 space-y-4">
+                <p>
+                  This application uses advanced AI to analyze skin conditions for signs of eczema,
+                  including redness, dryness, inflammation, and other characteristic patterns.
+                </p>
+                <p>
+                  <strong>Important:</strong> This tool is not a substitute for professional medical 
+                  diagnosis. If you have concerns about your skin condition, please consult a dermatologist 
+                  immediately.
+                </p>
+                <p>
+                  Early management of eczema can significantly improve comfort and prevent flare-ups.
+                  A proper skin care routine and avoiding triggers are essential parts of eczema management.
                 </p>
               </div>
             </div>
