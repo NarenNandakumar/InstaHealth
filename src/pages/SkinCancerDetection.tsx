@@ -7,9 +7,7 @@ import DisclaimerBanner from '@/components/DisclaimerBanner';
 import { Button } from '@/components/ui/button';
 import { detectSkinCancer } from '@/services/modelService';
 import { useToast } from '@/hooks/use-toast';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Scan, Heart, Brain, FlaskConical, BadgePlus } from 'lucide-react';
-import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -193,4 +191,3 @@ const SkinCancerDetection: React.FC = () => {
 };
 
 export default SkinCancerDetection;
-
