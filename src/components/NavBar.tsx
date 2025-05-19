@@ -101,7 +101,7 @@ const NavBar: React.FC = () => {
               }`}
             >
               <Settings className="h-4 w-4 inline" />
-              <span className="ml-1">Access</span>
+              <span className="ml-1">Accessibility</span>
             </Link>
             <Link 
               to="/ai-chatbot" 
