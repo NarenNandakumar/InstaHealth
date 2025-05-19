@@ -1,3 +1,4 @@
+
 import { DetectionResult } from '@/types';
 
 // OpenAI API endpoint and configuration
@@ -52,7 +53,7 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
         messages: [
           {
             role: 'system',
-            content: 'You are a dermatologist AI assistant specialized in skin cancer detection. Analyze the image and determine if there are signs of skin cancer. Focus on the ABCD criteria: Asymmetry, Border irregularity, Color variation, and Diameter. You MUST provide a prediction of either "Benign" or "Malignant" - DO NOT say "Unknown" or that you cannot determine. Even if uncertain, lean toward one of these two options based on available visual data. Also provide a confidence level between 0 and 1. Format your response clearly with "Prediction: [Benign/Malignant]" and "Confidence: [0.XX]" on separate lines.'
+            content: 'You are a dermatologist AI assistant specialized in skin cancer detection. Your task is to analyze the image and provide ONLY a binary classification. You MUST ALWAYS respond with either "Benign" or "Malignant" - absolutely no other answer is acceptable. DO NOT say "Unknown", "Cannot determine", or express uncertainty. If you are uncertain, you must still make your best guess based on available visual data. Your response MUST follow this EXACT format with no additional text:\n\nPrediction: [Benign or Malignant]\nConfidence: [number between 0.5 and 1]'
           },
           {
             role: 'user',
