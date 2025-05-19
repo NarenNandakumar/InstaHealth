@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -17,12 +16,12 @@ const Home: React.FC = () => {
           </p>
         </div>
 
-        {/* Hero Image Section */}
+        {/* Hero Image Section - Updated with new image */}
         <div className="mb-16 overflow-hidden rounded-2xl shadow-xl">
           <div className="relative">
             <img 
-              src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
-              alt="Doctor with patient" 
+              src="/lovable-uploads/550fb236-9c46-4412-8b2e-11472fa1bef3.png" 
+              alt="Caregiver with elderly patient" 
               className="w-full h-[400px] object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/70 to-transparent flex items-center">
