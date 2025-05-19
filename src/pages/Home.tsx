@@ -17,12 +17,12 @@ const Home: React.FC = () => {
           </p>
         </div>
 
-        {/* Hero Image Section */}
+        {/* Hero Image Section with doctor caring for patient */}
         <div className="mb-16 overflow-hidden rounded-2xl shadow-xl">
           <div className="relative">
             <img 
-              src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
-              alt="Doctor with patient" 
+              src="https://images.unsplash.com/photo-1584516150854-d40a5e1d91b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+              alt="Doctor caring for patient" 
               className="w-full h-[400px] object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/70 to-transparent flex items-center">
@@ -142,22 +142,48 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Testimonial Section with Caring Image */}
+        {/* Healthcare Access Mission Section - Replacing Testimonial */}
         <div className="mb-16 bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="grid md:grid-cols-2">
             <div className="p-8 flex items-center">
               <div>
-                <h3 className="text-2xl font-bold mb-4 text-blue-600">Patient Stories</h3>
-                <blockquote className="text-gray-600 italic mb-6">
-                  "The compassion and care I received through InstaHealth was extraordinary. The doctors truly listened to my concerns and provided thoughtful advice that made all the difference."
-                </blockquote>
-                <div className="font-semibold">- Sarah M., InstaHealth Patient</div>
+                <h3 className="text-2xl font-bold mb-4 text-blue-600">Healthcare Access For All</h3>
+                <p className="text-gray-600 mb-6">
+                  At InstaHealth, we believe that quality healthcare should be accessible to everyone, regardless of financial situation or geographic location. 
+                  Our mission is to break down barriers to medical care by connecting patients with compassionate professionals and cutting-edge AI technology.
+                </p>
+                <ul className="space-y-2 mb-6">
+                  <li className="flex items-center">
+                    <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-gray-600">Affordable virtual consultations</span>
+                  </li>
+                  <li className="flex items-center">
+                    <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-gray-600">No barriers for rural and remote communities</span>
+                  </li>
+                  <li className="flex items-center">
+                    <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-gray-600">Free AI-powered preliminary assessments</span>
+                  </li>
+                </ul>
               </div>
             </div>
             <div>
               <img 
                 src="https://images.unsplash.com/photo-1571772996211-2f02c9727629?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
-                alt="Doctor listening to patient" 
+                alt="Doctor with diverse group of patients" 
                 className="w-full h-full object-cover"
               />
             </div>
