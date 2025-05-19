@@ -2,7 +2,7 @@ import { DetectionResult } from '@/types';
 
 // OpenAI API endpoint and configuration
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
-const OPENAI_API_KEY = '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'; // Updated API key
+const OPENAI_API_KEY = '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'; // Updated API key
 const OPENAI_MODEL = 'gpt-4o'; // Using GPT-4o with vision capabilities
 
 // Function to convert image to base64 for API
@@ -71,8 +71,9 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
     });
     
     if (!response.ok) {
-      console.error(`API error status: ${response.status}`);
-      throw new Error(`API error: ${response.status}`);
+      const errorData = await response.text();
+      console.error(`API error status: ${response.status}, Details:`, errorData);
+      throw new Error(`API error: ${response.status} - ${errorData}`);
     }
     
     // Parse the API response
@@ -167,8 +168,9 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
     });
     
     if (!response.ok) {
-      console.error(`API error status: ${response.status}`);
-      throw new Error(`API error: ${response.status}`);
+      const errorData = await response.text();
+      console.error(`API error status: ${response.status}, Details:`, errorData);
+      throw new Error(`API error: ${response.status} - ${errorData}`);
     }
     
     // Parse the API response
