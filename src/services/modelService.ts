@@ -1,9 +1,14 @@
 import { DetectionResult } from '@/types';
+import { getApiKey } from '@/components/ApiKeyInput';
 
 // OpenAI API endpoint and configuration
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
-const OPENAI_API_KEY = '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'; // Updated API key
 const OPENAI_MODEL = 'gpt-4o'; // Using GPT-4o with vision capabilities
+
+// Function to get the current API key or fallback to demo mode
+const getCurrentApiKey = (): string | null => {
+  return getApiKey();
+};
 
 // Function to convert image to base64 for API
 const imageToBase64 = (imgElement: HTMLImageElement): Promise<string> => {
@@ -37,6 +42,11 @@ const imageToBase64 = (imgElement: HTMLImageElement): Promise<string> => {
 // Main function to detect skin cancer using OpenAI's API
 export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<DetectionResult> => {
   try {
+    const apiKey = getCurrentApiKey();
+    if (!apiKey) {
+      throw new Error('API key not found. Please add your OpenAI API key in settings.');
+    }
+    
     // Convert the image to base64
     const base64Image = await imageToBase64(imageElement);
     
@@ -45,7 +55,7 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
+        'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
         model: OPENAI_MODEL,
@@ -124,9 +134,10 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
     console.error('Error during skin cancer detection:', error);
     // On error, return a default result with high confidence
     return {
-      prediction: 'Benign',
-      confidence: 0.8, // Default high confidence
-      timestamp: new Date()
+      prediction: 'Error',
+      confidence: 0,
+      timestamp: new Date(),
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 };
@@ -134,6 +145,11 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
 // Function to detect eczema using OpenAI's API
 export const detectEczema = async (imageElement: HTMLImageElement): Promise<DetectionResult> => {
   try {
+    const apiKey = getCurrentApiKey();
+    if (!apiKey) {
+      throw new Error('API key not found. Please add your OpenAI API key in settings.');
+    }
+    
     // Convert the image to base64
     const base64Image = await imageToBase64(imageElement);
     
@@ -142,7 +158,7 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
+        'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
         model: OPENAI_MODEL,
@@ -220,9 +236,10 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
     console.error('Error during eczema detection:', error);
     // On error, return a default result with high confidence
     return {
-      prediction: 'No Eczema',
-      confidence: 0.8, // Default high confidence
-      timestamp: new Date()
+      prediction: 'Error',
+      confidence: 0,
+      timestamp: new Date(),
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 };
