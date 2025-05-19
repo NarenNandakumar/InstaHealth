@@ -33,9 +33,22 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result, isLoading }) =>
   }
 
   const confidencePercent = (result.confidence * 100).toFixed(2);
+  
+  // Determine colors based on prediction type
   const isMalignant = result.prediction === 'Malignant';
-  const resultColor = isMalignant ? 'text-red-600' : 'text-green-600';
-  const progressColor = isMalignant ? 'bg-red-600' : 'bg-green-600';
+  const isEczema = result.prediction === 'Eczema';
+  
+  // Set colors based on condition type
+  let resultColor;
+  let progressColor;
+  
+  if (isMalignant || isEczema) {
+    resultColor = 'text-red-600';
+    progressColor = 'bg-red-600'; 
+  } else {
+    resultColor = 'text-green-600';
+    progressColor = 'bg-green-600';
+  }
 
   return (
     <Card className="w-full max-w-md mx-auto mt-6">

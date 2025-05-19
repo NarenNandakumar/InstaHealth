@@ -148,7 +148,7 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
         messages: [
           {
             role: 'system',
-            content: 'You are a dermatologist AI assistant specialized in eczema detection. Your task is to analyze the image and provide ONLY a binary classification. You MUST ALWAYS respond with either "Positive" or "Negative" for eczema - absolutely no other answer is acceptable. DO NOT say "Unknown", "Cannot determine", or express uncertainty. If you are uncertain, you must still make your best guess based on available visual data. Your response MUST follow this EXACT format with no additional text:\n\nPrediction: [Positive or Negative]\nConfidence: [number between 0.8 and 1.0]'
+            content: 'You are a dermatologist AI assistant specialized in eczema detection. Your task is to analyze the image and provide ONLY a binary classification. You MUST ALWAYS respond with either "Eczema" or "No Eczema" - absolutely no other answer is acceptable. DO NOT say "Unknown", "Cannot determine", or express uncertainty. If you are uncertain, you must still make your best guess based on available visual data. Your response MUST follow this EXACT format with no additional text:\n\nPrediction: [Eczema or No Eczema]\nConfidence: [number between 0.8 and 1.0]'
           },
           {
             role: 'user',
@@ -180,21 +180,20 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
     console.log('AI Raw Response (eczema):', aiResponse);
     
     // Parse the AI's response to extract prediction and confidence
-    let prediction = 'Negative'; // Default to Negative if we can't determine
+    let prediction = 'No Eczema'; // Default if we can't determine
     let confidence = 0.8; // Set minimum confidence to 0.8
     
     // More robust parsing of the prediction
-    const predictionMatch = aiResponse.match(/prediction:?\s*(positive|negative)/i);
+    const predictionMatch = aiResponse.match(/prediction:?\s*(eczema|no eczema)/i);
     if (predictionMatch) {
       prediction = predictionMatch[1].charAt(0).toUpperCase() + predictionMatch[1].slice(1).toLowerCase();
     } else {
       // Fallback parsing - check if either word appears in the text
-      if (/positive/i.test(aiResponse)) {
-        prediction = 'Positive';
-      } else if (/negative/i.test(aiResponse)) {
-        prediction = 'Negative';
+      if (/eczema\b/i.test(aiResponse) && !(/no eczema/i.test(aiResponse))) {
+        prediction = 'Eczema';
+      } else {
+        prediction = 'No Eczema';
       }
-      // Otherwise keep the default Negative
     }
     
     // Try to extract confidence level but ensure it's at least 0.8
@@ -219,7 +218,7 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
     console.error('Error during eczema detection:', error);
     // On error, return a default result with high confidence
     return {
-      prediction: 'Negative',
+      prediction: 'No Eczema',
       confidence: 0.8, // Default high confidence
       timestamp: new Date()
     };
