@@ -75,8 +75,8 @@ const Home: React.FC = () => {
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="overflow-hidden">
               <img 
-                src="https://images.unsplash.com/photo-1584516150854-d40a5e1d91b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
-                alt="Doctor with patient" 
+                src="/lovable-uploads/c8bc9be1-78cd-48f4-83f3-1b1e0bca80b8.png" 
+                alt="Doctor with elderly patient" 
                 className="w-full h-48 object-cover"
               />
               <CardContent className="p-6">
