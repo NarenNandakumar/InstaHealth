@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,10 +7,13 @@ import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { createServiceRequest } from '@/services/requestService';
 import { useNavigate } from 'react-router-dom';
+import DoctorResponseBox from '@/components/DoctorResponseBox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const RequestService: React.FC = () => {
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const { user, userData } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -39,7 +43,7 @@ const RequestService: React.FC = () => {
     
     try {
       await createServiceRequest({
-        userId: user.id, // Changed from user.uid to user.id
+        userId: user.id,
         userEmail: userData.email,
         description: description.trim(),
         status: 'pending',
@@ -51,7 +55,9 @@ const RequestService: React.FC = () => {
         description: "Your service request has been submitted and will be reviewed by a medical professional.",
       });
       
-      setDescription('');
+      // Mark as submitted to show the doctor response waiting box
+      setIsSubmitted(true);
+      
     } catch (error) {
       console.error("Error submitting request:", error);
       toast({
@@ -102,50 +108,78 @@ const RequestService: React.FC = () => {
           </div>
         </div>
         
-        <Card className="shadow-lg border-blue-100">
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-t-lg">
-            <CardTitle className="text-2xl text-gray-800">Medical Consultation Request</CardTitle>
-            <CardDescription>
-              Describe your condition and a medical professional will be assigned to your case. Your information is kept confidential and secure.
-            </CardDescription>
-          </CardHeader>
-          <form onSubmit={handleSubmit}>
-            <CardContent className="pt-6">
-              <div className="grid w-full gap-4">
-                <div className="space-y-2">
-                  <label htmlFor="description" className="text-sm font-medium">
-                    Describe your symptoms or medical concerns
-                  </label>
-                  <Textarea
-                    id="description"
-                    placeholder="Please be as specific as possible. Include: when symptoms started, severity, any treatments tried, medical history relevant to this condition..."
-                    className="min-h-32 border-blue-200 focus:border-blue-400"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    disabled={isSubmitting}
-                  />
+        {!isSubmitted ? (
+          <Card className="shadow-lg border-blue-100">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-t-lg">
+              <CardTitle className="text-2xl text-gray-800">Medical Consultation Request</CardTitle>
+              <CardDescription>
+                Describe your condition and a medical professional will be assigned to your case. Your information is kept confidential and secure.
+              </CardDescription>
+            </CardHeader>
+            <form onSubmit={handleSubmit}>
+              <CardContent className="pt-6">
+                <div className="grid w-full gap-4">
+                  <div className="space-y-2">
+                    <label htmlFor="description" className="text-sm font-medium">
+                      Describe your symptoms or medical concerns
+                    </label>
+                    <Textarea
+                      id="description"
+                      placeholder="Please be as specific as possible. Include: when symptoms started, severity, any treatments tried, medical history relevant to this condition..."
+                      className="min-h-32 border-blue-200 focus:border-blue-400"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      disabled={isSubmitting}
+                    />
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-between bg-gray-50 rounded-b-lg">
-              <Button 
-                variant="outline" 
-                onClick={() => navigate('/')}
-                disabled={isSubmitting}
-                className="border-blue-300 text-blue-700"
-              >
-                Cancel
-              </Button>
-              <Button 
-                type="submit" 
-                disabled={isSubmitting}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                {isSubmitting ? 'Submitting...' : 'Submit Request'}
-              </Button>
-            </CardFooter>
-          </form>
-        </Card>
+              </CardContent>
+              <CardFooter className="flex justify-between bg-gray-50 rounded-b-lg">
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigate('/')}
+                  disabled={isSubmitting}
+                  className="border-blue-300 text-blue-700"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit Request'}
+                </Button>
+              </CardFooter>
+            </form>
+          </Card>
+        ) : (
+          <>
+            <Card className="shadow-lg border-blue-100 mb-4">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-t-lg">
+                <CardTitle className="text-2xl text-gray-800">Request Submitted</CardTitle>
+                <CardDescription>
+                  Your consultation request has been submitted successfully.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <p className="text-green-800">
+                    Thank you for your request. A medical professional will review your symptoms and provide a personalized response. You'll be notified when your consultation is complete.
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <h3 className="font-medium mb-2">Your request details:</h3>
+                  <div className="bg-gray-50 p-3 rounded-md">
+                    <p className="text-gray-700 whitespace-pre-wrap">{description}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <DoctorResponseBox />
+          </>
+        )}
 
         <div className="mt-8 bg-white p-6 rounded-xl shadow-md">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">How Medical Consultation Works</h2>
