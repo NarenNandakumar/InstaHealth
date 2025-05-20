@@ -6,7 +6,7 @@
 const API_KEY_STORAGE_KEY = 'openai_api_key';
 
 // Default API key - only used if no key is found in localStorage
-const DEFAULT_API_KEY = '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';
+const DEFAULT_API_KEY = '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';
 
 /**
  * Gets the OpenAI API key from localStorage or sets the default one

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,6 +13,7 @@ import LocationInput from '@/components/LocationInput';
 import SymptomDescription from '@/components/SymptomDescription';
 import DoctorRecommendations from '@/components/DoctorRecommendations';
 import { Doctor, getDoctorRecommendations } from '@/utils/doctorRecommendations';
+import { getApiKey, setApiKey } from '@/utils/apiKeyManager';
 
 interface Message {
   id: string;
@@ -43,22 +43,10 @@ const AIChatbot: React.FC = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [isLoadingDoctors, setIsLoadingDoctors] = useState(false);
   
-  // Get API key from localStorage or use the provided one
-  const getApiKey = () => {
-    const storedKey = localStorage.getItem('openai_api_key');
-    if (storedKey) {
-      return storedKey;
-    }
-    // If no key is found, store the provided key in localStorage
-    const defaultKey = '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';
-    localStorage.setItem('openai_api_key', defaultKey);
-    return defaultKey;
-  };
-  
   // Store the API key in localStorage when component mounts
   useEffect(() => {
-    const apiKey = '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';
-    localStorage.setItem('openai_api_key', apiKey);
+    const apiKey = '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';
+    setApiKey(apiKey);
   }, []);
 
   const scrollToBottom = () => {
@@ -99,6 +87,7 @@ const AIChatbot: React.FC = () => {
     // Use ChatGPT API
     try {
       const apiKey = getApiKey();
+      console.log("Using API key:", apiKey.substring(0, 8) + "..." + apiKey.substring(apiKey.length - 4)); // Log partial key for debugging
       
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -143,6 +132,7 @@ const AIChatbot: React.FC = () => {
       });
       
     } catch (error: any) {
+      console.error("API Error:", error);
       // Replace loading message with error
       setMessages(prev => 
         prev.map(msg => 
