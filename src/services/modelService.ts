@@ -2,12 +2,8 @@ import { DetectionResult } from '@/types';
 
 // OpenAI API endpoint and configuration
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
+const OPENAI_API_KEY = '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'; // Updated API key
 const OPENAI_MODEL = 'gpt-4o'; // Using GPT-4o with vision capabilities
-
-// Function to get API key from local storage only
-const getApiKey = (): string => {
-  return localStorage.getItem('openai_api_key') || '';
-};
 
 // Function to convert image to base64 for API
 const imageToBase64 = (imgElement: HTMLImageElement): Promise<string> => {
@@ -44,21 +40,12 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
     // Convert the image to base64
     const base64Image = await imageToBase64(imageElement);
     
-    // Get API key from local storage only
-    const apiKey = getApiKey();
-    
-    // Check if API key is available
-    if (!apiKey) {
-      console.error('OpenAI API key not found in local storage');
-      throw new Error('API key not configured');
-    }
-    
     // Prepare the API request
     const response = await fetch(OPENAI_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: OPENAI_MODEL,
@@ -149,21 +136,12 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
     // Convert the image to base64
     const base64Image = await imageToBase64(imageElement);
     
-    // Get API key from local storage only
-    const apiKey = getApiKey();
-    
-    // Check if API key is available
-    if (!apiKey) {
-      console.error('OpenAI API key not found in local storage');
-      throw new Error('API key not configured');
-    }
-    
     // Prepare the API request
     const response = await fetch(OPENAI_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: OPENAI_MODEL,

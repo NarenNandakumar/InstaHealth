@@ -1,9 +1,9 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { ImageFile, DetectionResult } from '@/types';
 import ImageUpload from '@/components/ImageUpload';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import DisclaimerBanner from '@/components/DisclaimerBanner';
-import ApiKeyMissing from '@/components/ApiKeyMissing';
 import { Button } from '@/components/ui/button';
 import { detectSkinCancer, detectEczema } from '@/services/modelService';
 import { useToast } from '@/hooks/use-toast';
@@ -18,7 +18,6 @@ const SkinCancerDetection: React.FC = () => {
   const imageRef = useRef<HTMLImageElement>(null);
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("skin-cancer");
-  const apiKeyAvailable = !!localStorage.getItem('openai_api_key');
 
   // Reset result when image changes or tab changes
   useEffect(() => {
@@ -26,15 +25,6 @@ const SkinCancerDetection: React.FC = () => {
   }, [selectedImage, activeTab]);
 
   const handleAnalyzeImage = async () => {
-    if (!apiKeyAvailable) {
-      toast({
-        title: 'API Key Missing',
-        description: 'The OpenAI API key is not configured.',
-        variant: 'destructive',
-      });
-      return;
-    }
-
     if (!selectedImage || !imageRef.current) {
       toast({
         title: 'No Image Selected',
@@ -91,8 +81,6 @@ const SkinCancerDetection: React.FC = () => {
 
   const AnalysisContent = () => (
     <>
-      {!apiKeyAvailable && <ApiKeyMissing />}
-      
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-2">
           Upload an Image
@@ -119,7 +107,7 @@ const SkinCancerDetection: React.FC = () => {
       <div className="flex justify-center mb-6">
         <Button 
           onClick={handleAnalyzeImage} 
-          disabled={!selectedImage || isLoading || !apiKeyAvailable}
+          disabled={!selectedImage || isLoading}
           className="px-6 py-2"
           size="lg"
         >
