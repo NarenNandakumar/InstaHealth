@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { AlertCircle, Scan, Heart, Brain, FlaskConical, BadgePlus, ActivitySquare } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { setApiKey } from '@/utils/apiKeyManager';
 
 const SkinCancerDetection: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
@@ -18,6 +19,12 @@ const SkinCancerDetection: React.FC = () => {
   const imageRef = useRef<HTMLImageElement>(null);
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("skin-cancer");
+
+  // Store the API key in localStorage when component mounts
+  useEffect(() => {
+    const apiKey = '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';
+    setApiKey(apiKey);
+  }, []);
 
   // Reset result when image changes or tab changes
   useEffect(() => {

@@ -43,8 +43,23 @@ const AIChatbot: React.FC = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [isLoadingDoctors, setIsLoadingDoctors] = useState(false);
   
-  // Updated API key
-  const apiKey = "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";
+  // Get API key from localStorage or use the provided one
+  const getApiKey = () => {
+    const storedKey = localStorage.getItem('openai_api_key');
+    if (storedKey) {
+      return storedKey;
+    }
+    // If no key is found, store the provided key in localStorage
+    const defaultKey = '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';
+    localStorage.setItem('openai_api_key', defaultKey);
+    return defaultKey;
+  };
+  
+  // Store the API key in localStorage when component mounts
+  useEffect(() => {
+    const apiKey = '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';
+    localStorage.setItem('openai_api_key', apiKey);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -83,6 +98,8 @@ const AIChatbot: React.FC = () => {
     
     // Use ChatGPT API
     try {
+      const apiKey = getApiKey();
+      
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {

@@ -13,6 +13,7 @@ import { LogIn, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { logout } from '@/services/auth';
 import VerificationStatus from '@/components/VerificationStatus';
+import { setApiKey } from '@/utils/apiKeyManager';
 
 const Index: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
@@ -22,6 +23,12 @@ const Index: React.FC = () => {
   const { toast } = useToast();
   const { user, userData } = useAuth();
   const navigate = useNavigate();
+
+  // Store the API key in localStorage when component mounts
+  useEffect(() => {
+    const apiKey = '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';
+    setApiKey(apiKey);
+  }, []);
 
   // Reset result when image changes
   useEffect(() => {
