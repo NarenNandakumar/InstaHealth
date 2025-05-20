@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,6 +13,7 @@ import LocationInput from '@/components/LocationInput';
 import SymptomDescription from '@/components/SymptomDescription';
 import DoctorRecommendations from '@/components/DoctorRecommendations';
 import { Doctor, getDoctorRecommendations } from '@/utils/doctorRecommendations';
+import ApiKeyManager from '@/components/ApiKeyManager';
 
 interface Message {
   id: string;
@@ -42,9 +42,6 @@ const AIChatbot: React.FC = () => {
   const [location, setLocation] = useState('');
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [isLoadingDoctors, setIsLoadingDoctors] = useState(false);
-  
-  // Updated API key
-  const apiKey = "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";
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -58,6 +55,17 @@ const AIChatbot: React.FC = () => {
     e.preventDefault();
     
     if (!input.trim()) return;
+    
+    // Get API key from localStorage
+    const apiKey = localStorage.getItem('openai_api_key');
+    if (!apiKey) {
+      toast({
+        title: "API Key Required",
+        description: "Please enter your OpenAI API key in the settings panel",
+        variant: "destructive"
+      });
+      return;
+    }
     
     // Add user message
     const userMessage: Message = {
@@ -203,7 +211,10 @@ const AIChatbot: React.FC = () => {
         <div className="md:col-span-8">
           <DisclaimerBanner />
           
-          <Card className="h-[calc(100vh-400px)] flex flex-col">
+          {/* Add API Key Manager */}
+          <ApiKeyManager />
+          
+          <Card className="h-[calc(100vh-500px)] flex flex-col">
             <CardHeader className="border-b">
               <CardTitle>Chat with Medical AI</CardTitle>
               <CardDescription>
