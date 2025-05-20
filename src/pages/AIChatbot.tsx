@@ -13,7 +13,7 @@ import LocationInput from '@/components/LocationInput';
 import SymptomDescription from '@/components/SymptomDescription';
 import DoctorRecommendations from '@/components/DoctorRecommendations';
 import { Doctor, getDoctorRecommendations } from '@/utils/doctorRecommendations';
-import { getApiKey, setApiKey } from '@/utils/apiKeyManager';
+import { getApiKey, setApiKey, hasApiKey } from '@/utils/apiKeyManager';
 
 interface Message {
   id: string;
@@ -49,6 +49,22 @@ const AIChatbot: React.FC = () => {
     setApiKey(apiKey);
   }, []);
 
+  const [apiKeyInput, setApiKeyInput] = useState<string>('');
+  const [showApiKeyInput, setShowApiKeyInput] = useState<boolean>(!hasApiKey());
+  
+  // Initialize with key from sessionStorage (temporary storage) if available
+  useEffect(() => {
+    const apiKeyFromSession = sessionStorage.getItem('temp_api_key');
+    if (apiKeyFromSession) {
+      setApiKey(apiKeyFromSession);
+      setShowApiKeyInput(false);
+      // Clear from session storage after transferring
+      sessionStorage.removeItem('temp_api_key');
+    } else if (!hasApiKey()) {
+      setShowApiKeyInput(true);
+    }
+  }, []);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -57,8 +73,32 @@ const AIChatbot: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
+  const handleSetApiKey = () => {
+    if (apiKeyInput.trim()) {
+      setApiKey(apiKeyInput.trim());
+      setApiKeyInput('');
+      setShowApiKeyInput(false);
+      toast({
+        title: "API Key Set",
+        description: "Your OpenAI API key has been stored securely.",
+      });
+    }
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!input.trim()) return;
+    
+    if (!hasApiKey()) {
+      toast({
+        title: "API Key Required",
+        description: "Please provide an OpenAI API key to use the chatbot.",
+        variant: "destructive"
+      });
+      setShowApiKeyInput(true);
+      return;
+    }
     
     if (!input.trim()) return;
     
@@ -205,6 +245,32 @@ const AIChatbot: React.FC = () => {
         <Bot className="h-8 w-8" />
         Medical Assistant AI
       </h1>
+
+      {showApiKeyInput && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Enter OpenAI API Key</CardTitle>
+            <CardDescription>
+              Your API key is needed to use the AI chatbot. It will be stored securely in your browser.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-2">
+              <Input
+                type="password"
+                value={apiKeyInput}
+                onChange={(e) => setApiKeyInput(e.target.value)}
+                placeholder="Enter your OpenAI API key"
+                className="flex-1"
+              />
+              <Button onClick={handleSetApiKey}>Save Key</Button>
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              Your API key is stored locally on your device and never sent to our servers.
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid md:grid-cols-12 gap-6">
         <div className="md:col-span-8">

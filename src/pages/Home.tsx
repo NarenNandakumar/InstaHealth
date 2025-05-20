@@ -12,8 +12,14 @@ import { setApiKey } from '@/utils/apiKeyManager';
 const Home: React.FC = () => {
   // Store the API key in localStorage when component mounts
   useEffect(() => {
-    const apiKey = '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';
-    setApiKey(apiKey);
+    // The key will be set by user input or other secure methods
+    // This just ensures the apiKeyManager is initialized
+    const apiKeyFromUserInput = sessionStorage.getItem('temp_api_key');
+    if (apiKeyFromUserInput) {
+      setApiKey(apiKeyFromUserInput);
+      // Clear from session storage after transferring to more persistent localStorage
+      sessionStorage.removeItem('temp_api_key');
+    }
   }, []);
 
   return (

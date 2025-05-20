@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { ImageFile, DetectionResult } from '@/types';
 import ImageUpload from '@/components/ImageUpload';
@@ -10,7 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { AlertCircle, Scan, Heart, Brain, FlaskConical, BadgePlus, ActivitySquare } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { setApiKey } from '@/utils/apiKeyManager';
+import { setApiKey, hasApiKey } from '@/utils/apiKeyManager';
+import { Input } from '@/components/ui/input';
 
 const SkinCancerDetection: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
@@ -19,11 +19,20 @@ const SkinCancerDetection: React.FC = () => {
   const imageRef = useRef<HTMLImageElement>(null);
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("skin-cancer");
+  const [apiKeyInput, setApiKeyInput] = useState<string>('');
+  const [showApiKeyInput, setShowApiKeyInput] = useState<boolean>(!hasApiKey());
 
   // Store the API key in localStorage when component mounts
   useEffect(() => {
-    const apiKey = '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';
-    setApiKey(apiKey);
+    const apiKeyFromSession = sessionStorage.getItem('temp_api_key');
+    if (apiKeyFromSession) {
+      setApiKey(apiKeyFromSession);
+      setShowApiKeyInput(false);
+      // Clear from session storage after transferring
+      sessionStorage.removeItem('temp_api_key');
+    } else if (!hasApiKey()) {
+      setShowApiKeyInput(true);
+    }
   }, []);
 
   // Reset result when image changes or tab changes
@@ -63,6 +72,18 @@ const SkinCancerDetection: React.FC = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSetApiKey = () => {
+    if (apiKeyInput.trim()) {
+      setApiKey(apiKeyInput.trim());
+      setApiKeyInput('');
+      setShowApiKeyInput(false);
+      toast({
+        title: "API Key Set",
+        description: "Your OpenAI API key has been stored securely.",
+      });
     }
   };
 
@@ -132,6 +153,32 @@ const SkinCancerDetection: React.FC = () => {
         <h1 className="text-3xl font-bold text-gray-900 mb-6">
           Health Analysis Tools
         </h1>
+        
+        {showApiKeyInput && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Enter OpenAI API Key</CardTitle>
+              <CardDescription>
+                Your API key is needed for analysis. It will be stored securely in your browser.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-2">
+                <Input
+                  type="password"
+                  value={apiKeyInput}
+                  onChange={(e) => setApiKeyInput(e.target.value)}
+                  placeholder="Enter your OpenAI API key"
+                  className="flex-1"
+                />
+                <Button onClick={handleSetApiKey}>Save Key</Button>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Your API key is stored locally on your device and never sent to our servers.
+              </p>
+            </CardContent>
+          </Card>
+        )}
         
         <Tabs defaultValue="skin-cancer" className="w-full mb-8" onValueChange={setActiveTab}>
           <TabsList className="grid grid-cols-5 w-full mb-6">

@@ -5,11 +5,8 @@
 
 const API_KEY_STORAGE_KEY = 'openai_api_key';
 
-// Default API key - only used if no key is found in localStorage
-const DEFAULT_API_KEY = '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';
-
 /**
- * Gets the OpenAI API key from localStorage or sets the default one
+ * Gets the OpenAI API key from localStorage
  */
 export const getApiKey = (): string => {
   // Don't run this in SSR context
@@ -18,14 +15,7 @@ export const getApiKey = (): string => {
   }
 
   const storedKey = localStorage.getItem(API_KEY_STORAGE_KEY);
-  
-  if (storedKey) {
-    return storedKey;
-  }
-  
-  // If no key is found, store the default key
-  localStorage.setItem(API_KEY_STORAGE_KEY, DEFAULT_API_KEY);
-  return DEFAULT_API_KEY;
+  return storedKey || '';
 };
 
 /**

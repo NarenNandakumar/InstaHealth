@@ -26,8 +26,14 @@ const Index: React.FC = () => {
 
   // Store the API key in localStorage when component mounts
   useEffect(() => {
-    const apiKey = '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';
-    setApiKey(apiKey);
+    // Set the API key from sessionStorage if available (temporary storage)
+    // This creates a pattern where the key is never in the code
+    const apiKeyFromSession = sessionStorage.getItem('temp_api_key');
+    if (apiKeyFromSession) {
+      setApiKey(apiKeyFromSession);
+      // Clear from session storage after transferring
+      sessionStorage.removeItem('temp_api_key');
+    }
   }, []);
 
   // Reset result when image changes
