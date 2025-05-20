@@ -1,9 +1,8 @@
-
 import { DetectionResult } from '@/types';
 
 // OpenAI API endpoint and configuration
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
-const OPENAI_API_KEY = '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'; // Updated API key
+const OPENAI_API_KEY = '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'; // Updated API key
 const OPENAI_MODEL = 'gpt-4o'; // Using GPT-4o with vision capabilities
 
 // Function to convert image to base64 for API

@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -43,7 +44,7 @@ const AIChatbot: React.FC = () => {
   const [isLoadingDoctors, setIsLoadingDoctors] = useState(false);
   
   // Updated API key
-  const apiKey = "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";
+  const apiKey = "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";
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
