@@ -23,7 +23,7 @@ const Index: React.FC = () => {
   const { toast } = useToast();
   const { user, userData } = useAuth();
   const navigate = useNavigate();
-  const apiKeyAvailable = !!import.meta.env.VITE_OPENAI_API_KEY;
+  const apiKeyAvailable = !!localStorage.getItem('openai_api_key') || !!import.meta.env.VITE_OPENAI_API_KEY;
 
   // Reset result when image changes
   useEffect(() => {
@@ -34,7 +34,7 @@ const Index: React.FC = () => {
     if (!apiKeyAvailable) {
       toast({
         title: 'API Key Missing',
-        description: 'The OpenAI API key is not configured.',
+        description: 'Please add your OpenAI API key in the form below.',
         variant: 'destructive',
       });
       return;
@@ -115,7 +115,7 @@ const Index: React.FC = () => {
         <DisclaimerBanner />
 
         <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-          {!apiKeyAvailable && <ApiKeyMissing />}
+          <ApiKeyMissing />
           
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-2">

@@ -3,8 +3,15 @@ import { DetectionResult } from '@/types';
 
 // OpenAI API endpoint and configuration
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
-const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || ''; // Use environment variable
 const OPENAI_MODEL = 'gpt-4o'; // Using GPT-4o with vision capabilities
+
+// Function to get API key with localStorage prioritized
+const getApiKey = (): string => {
+  const localStorageKey = localStorage.getItem('openai_api_key');
+  const envKey = import.meta.env.VITE_OPENAI_API_KEY;
+  
+  return localStorageKey || envKey || '';
+};
 
 // Function to convert image to base64 for API
 const imageToBase64 = (imgElement: HTMLImageElement): Promise<string> => {
@@ -41,9 +48,12 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
     // Convert the image to base64
     const base64Image = await imageToBase64(imageElement);
     
+    // Get API key
+    const apiKey = getApiKey();
+    
     // Check if API key is available
-    if (!OPENAI_API_KEY) {
-      console.error('OpenAI API key not found in environment variables');
+    if (!apiKey) {
+      console.error('OpenAI API key not found in environment variables or local storage');
       throw new Error('API key not configured');
     }
     
@@ -52,7 +62,7 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
+        'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
         model: OPENAI_MODEL,
@@ -143,9 +153,12 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
     // Convert the image to base64
     const base64Image = await imageToBase64(imageElement);
     
+    // Get API key
+    const apiKey = getApiKey();
+    
     // Check if API key is available
-    if (!OPENAI_API_KEY) {
-      console.error('OpenAI API key not found in environment variables');
+    if (!apiKey) {
+      console.error('OpenAI API key not found in environment variables or local storage');
       throw new Error('API key not configured');
     }
     
@@ -154,7 +167,7 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
+        'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
         model: OPENAI_MODEL,
