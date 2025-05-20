@@ -5,6 +5,7 @@ import { ImageFile, DetectionResult } from '@/types';
 import ImageUpload from '@/components/ImageUpload';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import DisclaimerBanner from '@/components/DisclaimerBanner';
+import ApiKeyMissing from '@/components/ApiKeyMissing';
 import { Button } from '@/components/ui/button';
 import { detectSkinCancer } from '@/services/modelService';
 import { useToast } from '@/hooks/use-toast';
@@ -22,6 +23,7 @@ const Index: React.FC = () => {
   const { toast } = useToast();
   const { user, userData } = useAuth();
   const navigate = useNavigate();
+  const apiKeyAvailable = !!import.meta.env.VITE_OPENAI_API_KEY;
 
   // Reset result when image changes
   useEffect(() => {
@@ -29,6 +31,15 @@ const Index: React.FC = () => {
   }, [selectedImage]);
 
   const handleAnalyzeImage = async () => {
+    if (!apiKeyAvailable) {
+      toast({
+        title: 'API Key Missing',
+        description: 'The OpenAI API key is not configured.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     if (!selectedImage || !imageRef.current) {
       toast({
         title: 'No Image Selected',
@@ -104,6 +115,8 @@ const Index: React.FC = () => {
         <DisclaimerBanner />
 
         <div className="bg-white shadow-md rounded-lg p-6 mb-8">
+          {!apiKeyAvailable && <ApiKeyMissing />}
+          
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
               Upload an Image
@@ -130,7 +143,7 @@ const Index: React.FC = () => {
           <div className="flex justify-center mb-6">
             <Button 
               onClick={handleAnalyzeImage} 
-              disabled={!selectedImage || isLoading}
+              disabled={!selectedImage || isLoading || !apiKeyAvailable}
               className="px-6 py-2"
               size="lg"
             >

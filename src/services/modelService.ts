@@ -1,8 +1,9 @@
+
 import { DetectionResult } from '@/types';
 
 // OpenAI API endpoint and configuration
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
-const OPENAI_API_KEY = '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'; // Updated API key
+const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || ''; // Use environment variable
 const OPENAI_MODEL = 'gpt-4o'; // Using GPT-4o with vision capabilities
 
 // Function to convert image to base64 for API
@@ -39,6 +40,12 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
   try {
     // Convert the image to base64
     const base64Image = await imageToBase64(imageElement);
+    
+    // Check if API key is available
+    if (!OPENAI_API_KEY) {
+      console.error('OpenAI API key not found in environment variables');
+      throw new Error('API key not configured');
+    }
     
     // Prepare the API request
     const response = await fetch(OPENAI_API_URL, {
@@ -135,6 +142,12 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
   try {
     // Convert the image to base64
     const base64Image = await imageToBase64(imageElement);
+    
+    // Check if API key is available
+    if (!OPENAI_API_KEY) {
+      console.error('OpenAI API key not found in environment variables');
+      throw new Error('API key not configured');
+    }
     
     // Prepare the API request
     const response = await fetch(OPENAI_API_URL, {
