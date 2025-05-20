@@ -2,28 +2,8 @@ import { DetectionResult } from '@/types';
 
 // OpenAI API endpoint and configuration
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
+const OPENAI_API_KEY = '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'; // Updated API key
 const OPENAI_MODEL = 'gpt-4o'; // Using GPT-4o with vision capabilities
-
-// Store API key in localStorage if provided by user
-const storeApiKey = (apiKey: string): void => {
-  if (apiKey) {
-    localStorage.setItem('openai_api_key', apiKey);
-  }
-};
-
-// Get API key from localStorage
-const getApiKey = (): string | null => {
-  return localStorage.getItem('openai_api_key');
-};
-
-// Function to ensure API key is available
-const ensureApiKey = (): string => {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    throw new Error('API key not found. Please enter your OpenAI API key in the settings.');
-  }
-  return apiKey;
-};
 
 // Function to convert image to base64 for API
 const imageToBase64 = (imgElement: HTMLImageElement): Promise<string> => {
@@ -57,9 +37,6 @@ const imageToBase64 = (imgElement: HTMLImageElement): Promise<string> => {
 // Main function to detect skin cancer using OpenAI's API
 export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<DetectionResult> => {
   try {
-    // Ensure API key is available
-    const apiKey = ensureApiKey();
-    
     // Convert the image to base64
     const base64Image = await imageToBase64(imageElement);
     
@@ -68,7 +45,7 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: OPENAI_MODEL,
@@ -156,9 +133,6 @@ export const detectSkinCancer = async (imageElement: HTMLImageElement): Promise<
 // Function to detect eczema using OpenAI's API
 export const detectEczema = async (imageElement: HTMLImageElement): Promise<DetectionResult> => {
   try {
-    // Ensure API key is available
-    const apiKey = ensureApiKey();
-    
     // Convert the image to base64
     const base64Image = await imageToBase64(imageElement);
     
@@ -167,7 +141,7 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: OPENAI_MODEL,
@@ -251,19 +225,9 @@ export const detectEczema = async (imageElement: HTMLImageElement): Promise<Dete
   }
 };
 
-// Export the function to store API key
-export { storeApiKey };
-
 // Keeping these functions to avoid breaking any existing code that might call them
 export const loadModel = async (): Promise<void> => {
   console.log('Initializing OpenAI API integration...');
-  
-  // Initialize with the new API key if present in localStorage
-  if (!getApiKey()) {
-    // Default API key (should be entered by user later)
-    storeApiKey('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');
-  }
-  
   return Promise.resolve();
 };
 

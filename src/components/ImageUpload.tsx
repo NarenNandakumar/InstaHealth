@@ -1,32 +1,17 @@
 
-import React, { useState, useCallback, Dispatch, SetStateAction } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ImageFile } from '@/types';
 import { Upload, X } from 'lucide-react';
 
 interface ImageUploadProps {
-  onImageUpload?: (img: HTMLImageElement | null) => void;
-  onImageSelect?: Dispatch<SetStateAction<ImageFile | null>>;
-  selectedImage?: ImageFile | null;
-  isBusy?: boolean;
-  disabled?: boolean;
+  onImageSelect: (file: ImageFile | null) => void;
+  selectedImage: ImageFile | null;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ 
-  onImageUpload, 
-  onImageSelect,
-  selectedImage: propSelectedImage,
-  isBusy = false, 
-  disabled = false 
-}) => {
-  // Use internal state if no selectedImage prop is provided
-  const [internalSelectedImage, setInternalSelectedImage] = useState<ImageFile | null>(null);
+const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, selectedImage }) => {
   const [isDragging, setIsDragging] = useState(false);
-  
-  // Use either the prop or internal state
-  const selectedImage = propSelectedImage !== undefined ? propSelectedImage : internalSelectedImage;
-  const setSelectedImage = onImageSelect || setInternalSelectedImage;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -43,16 +28,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
     const imageFile = file as ImageFile;
     imageFile.preview = URL.createObjectURL(file);
-    setSelectedImage(imageFile);
-    
-    // Create an image element from the file if onImageUpload is provided
-    if (onImageUpload) {
-      const img = new Image();
-      img.onload = () => {
-        onImageUpload(img);
-      };
-      img.src = imageFile.preview;
-    }
+    onImageSelect(imageFile);
   };
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -77,10 +53,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     if (selectedImage) {
       URL.revokeObjectURL(selectedImage.preview);
     }
-    setSelectedImage(null);
-    if (onImageUpload) {
-      onImageUpload(null);
-    }
+    onImageSelect(null);
   };
 
   return (
@@ -97,7 +70,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               onClick={removeImage}
               className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md hover:bg-gray-100"
               aria-label="Remove image"
-              disabled={isBusy}
             >
               <X className="h-5 w-5 text-gray-700" />
             </button>
@@ -106,7 +78,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           <div
             className={`border-2 border-dashed rounded-lg p-6 text-center ${
               isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
-            } ${disabled || isBusy ? 'opacity-60 cursor-not-allowed' : ''}`}
+            }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -115,15 +87,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             <p className="mt-2 text-sm font-medium text-gray-900">
               Drag and drop an image, or
             </p>
-            <label className={`mt-2 ${disabled || isBusy ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
-              <Button variant="outline" className="relative" disabled={disabled || isBusy}>
+            <label className="mt-2 cursor-pointer">
+              <Button variant="outline" className="relative">
                 Browse Files
                 <input
                   type="file"
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   onChange={handleFileChange}
                   accept="image/*"
-                  disabled={disabled || isBusy}
                 />
               </Button>
             </label>

@@ -8,112 +8,61 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 
 interface ResultsDisplayProps {
-  onAnalyze: () => Promise<void>;
-  imageElement: HTMLImageElement | null;
-  isBusy: boolean;
-  isModelLoaded: boolean;
-  skinCancerResult: DetectionResult | null;
-  eczemaResult: DetectionResult | null;
+  result: DetectionResult | null;
+  isLoading: boolean;
 }
 
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ 
-  onAnalyze, 
-  imageElement, 
-  isBusy, 
-  isModelLoaded,
-  skinCancerResult,
-  eczemaResult
-}) => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result, isLoading }) => {
   const [showNextSteps, setShowNextSteps] = useState(false);
   
   // Show dialog when a positive result is detected
   useEffect(() => {
-    if ((skinCancerResult && skinCancerResult.prediction === 'Malignant') || 
-        (eczemaResult && eczemaResult.prediction === 'Eczema')) {
+    if (result && (result.prediction === 'Malignant' || result.prediction === 'Eczema')) {
       setShowNextSteps(true);
     }
-  }, [skinCancerResult, eczemaResult]);
+  }, [result]);
 
-  if (!imageElement) {
+  if (isLoading) {
     return (
       <Card className="w-full max-w-md mx-auto mt-6">
         <CardHeader>
-          <CardTitle className="text-center">Ready to Analyze</CardTitle>
+          <CardTitle className="text-center">Analyzing Image</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center space-y-4">
-          <p className="text-sm text-muted-foreground text-center">
-            Upload an image to begin analysis
+          <div className="w-full">
+            <Progress value={undefined} className="w-full h-2" />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Our AI model is analyzing the image. Please wait...
           </p>
         </CardContent>
       </Card>
     );
   }
 
-  const renderResult = (result: DetectionResult | null, title: string) => {
-    if (!result) return null;
+  if (!result) {
+    return null;
+  }
 
-    const confidencePercent = (result.confidence * 100).toFixed(2);
-    
-    // Determine colors based on prediction type
-    const isMalignant = result.prediction === 'Malignant';
-    const isEczema = result.prediction === 'Eczema';
-    
-    // Set colors based on condition type
-    let resultColor;
-    let progressColor;
-    
-    if (isMalignant || isEczema) {
-      resultColor = 'text-red-600';
-      progressColor = 'bg-red-600'; 
-    } else {
-      resultColor = 'text-green-600';
-      progressColor = 'bg-green-600';
-    }
-    
-    return (
-      <Card className="w-full max-w-md mx-auto mt-6">
-        <CardHeader>
-          <CardTitle className="text-center">{title}</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center space-y-4">
-          <div className="text-3xl font-bold text-center">
-            <span className={resultColor}>{result.prediction}</span>
-          </div>
-          
-          <div className="w-full">
-            <div className="flex justify-between text-sm mb-1">
-              <span>Confidence Level</span>
-              <span className="font-medium">{confidencePercent}%</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2.5">
-              <div 
-                className={`h-2.5 rounded-full ${progressColor}`}
-                style={{ width: `${confidencePercent}%` }}
-              />
-            </div>
-          </div>
-
-          <div className="text-sm text-muted-foreground mt-4">
-            <p>
-              Analyzed on{' '}
-              {result.timestamp.toLocaleString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
+  const confidencePercent = (result.confidence * 100).toFixed(2);
+  
+  // Determine colors based on prediction type
+  const isMalignant = result.prediction === 'Malignant';
+  const isEczema = result.prediction === 'Eczema';
+  
+  // Set colors based on condition type
+  let resultColor;
+  let progressColor;
+  
+  if (isMalignant || isEczema) {
+    resultColor = 'text-red-600';
+    progressColor = 'bg-red-600'; 
+  } else {
+    resultColor = 'text-green-600';
+    progressColor = 'bg-green-600';
+  }
 
   const getNextStepsContent = () => {
-    const isMalignant = skinCancerResult?.prediction === 'Malignant';
-    const isEczema = eczemaResult?.prediction === 'Eczema';
-    
     if (isMalignant) {
       return (
         <div className="space-y-4">
@@ -166,49 +115,43 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      {!isBusy && !skinCancerResult && !eczemaResult && (
-        <Card className="w-full max-w-md mx-auto">
-          <CardContent className="p-6 flex flex-col items-center">
-            <img
-              src={imageElement.src}
-              alt="Uploaded image"
-              className="w-full h-64 object-contain rounded-md border mb-4"
-            />
-            <Button 
-              onClick={onAnalyze} 
-              disabled={!isModelLoaded || isBusy}
-              className="w-full mt-4"
-            >
-              {isBusy ? 'Analyzing...' : 'Analyze Image'}
-            </Button>
-            {!isModelLoaded && (
-              <p className="text-sm text-orange-600 mt-2">
-                Please wait for the model to load or enter your API key.
-              </p>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {isBusy && (
-        <Card className="w-full max-w-md mx-auto mt-6">
-          <CardHeader>
-            <CardTitle className="text-center">Analyzing Image</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center space-y-4">
-            <div className="w-full">
-              <Progress value={undefined} className="w-full h-2" />
+    <>
+      <Card className="w-full max-w-md mx-auto mt-6">
+        <CardHeader>
+          <CardTitle className="text-center">Detection Result</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center space-y-4">
+          <div className="text-3xl font-bold text-center">
+            <span className={resultColor}>{result.prediction}</span>
+          </div>
+          
+          <div className="w-full">
+            <div className="flex justify-between text-sm mb-1">
+              <span>Confidence Level</span>
+              <span className="font-medium">{confidencePercent}%</span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Our AI model is analyzing the image. Please wait...
-            </p>
-          </CardContent>
-        </Card>
-      )}
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div 
+                className={`h-2.5 rounded-full ${progressColor}`}
+                style={{ width: `${confidencePercent}%` }}
+              />
+            </div>
+          </div>
 
-      {skinCancerResult && renderResult(skinCancerResult, "Skin Cancer Analysis")}
-      {eczemaResult && renderResult(eczemaResult, "Eczema Analysis")}
+          <div className="text-sm text-muted-foreground mt-4">
+            <p>
+              Analyzed on{' '}
+              {result.timestamp.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
 
       <Dialog open={showNextSteps} onOpenChange={setShowNextSteps}>
         <DialogContent className="max-w-md mx-auto">
@@ -230,7 +173,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 };
 
