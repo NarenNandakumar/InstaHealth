@@ -1,19 +1,32 @@
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, Dispatch, SetStateAction } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ImageFile } from '@/types';
 import { Upload, X } from 'lucide-react';
 
 interface ImageUploadProps {
-  onImageUpload: (img: HTMLImageElement) => void;
-  isBusy: boolean;
-  disabled: boolean;
+  onImageUpload?: (img: HTMLImageElement | null) => void;
+  onImageSelect?: Dispatch<SetStateAction<ImageFile | null>>;
+  selectedImage?: ImageFile | null;
+  isBusy?: boolean;
+  disabled?: boolean;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload, isBusy, disabled }) => {
-  const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
+const ImageUpload: React.FC<ImageUploadProps> = ({ 
+  onImageUpload, 
+  onImageSelect,
+  selectedImage: propSelectedImage,
+  isBusy = false, 
+  disabled = false 
+}) => {
+  // Use internal state if no selectedImage prop is provided
+  const [internalSelectedImage, setInternalSelectedImage] = useState<ImageFile | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  
+  // Use either the prop or internal state
+  const selectedImage = propSelectedImage !== undefined ? propSelectedImage : internalSelectedImage;
+  const setSelectedImage = onImageSelect || setInternalSelectedImage;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,12 +45,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload, isBusy, disabl
     imageFile.preview = URL.createObjectURL(file);
     setSelectedImage(imageFile);
     
-    // Create an image element from the file
-    const img = new Image();
-    img.onload = () => {
-      onImageUpload(img);
-    };
-    img.src = imageFile.preview;
+    // Create an image element from the file if onImageUpload is provided
+    if (onImageUpload) {
+      const img = new Image();
+      img.onload = () => {
+        onImageUpload(img);
+      };
+      img.src = imageFile.preview;
+    }
   };
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -63,7 +78,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload, isBusy, disabl
       URL.revokeObjectURL(selectedImage.preview);
     }
     setSelectedImage(null);
-    onImageUpload(null);
+    if (onImageUpload) {
+      onImageUpload(null);
+    }
   };
 
   return (

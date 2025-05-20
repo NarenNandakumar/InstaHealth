@@ -18,7 +18,7 @@ const Index: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
   const [result, setResult] = useState<DetectionResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const imageRef = useRef<HTMLImageElement>(null);
+  const imageRef = useRef<HTMLImageElement | null>(null);
   const { toast } = useToast();
   const { user, userData } = useAuth();
   const navigate = useNavigate();
@@ -27,6 +27,15 @@ const Index: React.FC = () => {
   useEffect(() => {
     setResult(null);
   }, [selectedImage]);
+
+  // Function to handle image upload and set reference
+  const handleImageUpload = (img: HTMLImageElement | null) => {
+    if (img) {
+      imageRef.current = img;
+    } else {
+      imageRef.current = null;
+    }
+  };
 
   const handleAnalyzeImage = async () => {
     if (!selectedImage || !imageRef.current) {
@@ -112,19 +121,10 @@ const Index: React.FC = () => {
               For best results, upload a well-lit, close-up photo of the skin lesion against a neutral background.
             </p>
             <ImageUpload 
-              onImageSelect={setSelectedImage} 
-              selectedImage={selectedImage} 
+              onImageUpload={handleImageUpload}
+              onImageSelect={setSelectedImage}
+              selectedImage={selectedImage}
             />
-            {selectedImage && (
-              <div className="hidden">
-                <img 
-                  ref={imageRef}
-                  src={selectedImage.preview}
-                  alt="Selected for analysis"
-                  crossOrigin="anonymous"
-                />
-              </div>
-            )}
           </div>
 
           <div className="flex justify-center mb-6">
@@ -138,7 +138,14 @@ const Index: React.FC = () => {
             </Button>
           </div>
 
-          <ResultsDisplay result={result} isLoading={isLoading} />
+          <ResultsDisplay 
+            skinCancerResult={result}
+            eczemaResult={null}
+            isBusy={isLoading}
+            isModelLoaded={true}
+            onAnalyze={handleAnalyzeImage}
+            imageElement={imageRef.current}
+          />
         </div>
 
         <div className="bg-white shadow-md rounded-lg p-6">
