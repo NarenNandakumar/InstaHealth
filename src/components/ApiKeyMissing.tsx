@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,18 @@ const ApiKeyMissing: React.FC = () => {
   const [inputKey, setInputKey] = useState<string>('');
   const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
   
+  // Set the provided API key automatically on component mount
+  useEffect(() => {
+    const providedKey = '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';
+    
+    // Only set the key if it's not already in localStorage
+    if (!localStorage.getItem('openai_api_key')) {
+      localStorage.setItem('openai_api_key', providedKey);
+      setApiKey(providedKey);
+      console.log('API key automatically set in local storage');
+    }
+  }, []);
+
   const handleSaveKey = () => {
     if (inputKey) {
       localStorage.setItem('openai_api_key', inputKey);
