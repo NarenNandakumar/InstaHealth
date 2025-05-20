@@ -6,11 +6,13 @@ import { ImageFile } from '@/types';
 import { Upload, X } from 'lucide-react';
 
 interface ImageUploadProps {
-  onImageSelect: (file: ImageFile | null) => void;
-  selectedImage: ImageFile | null;
+  onImageUpload: (img: HTMLImageElement) => void;
+  isBusy: boolean;
+  disabled: boolean;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, selectedImage }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload, isBusy, disabled }) => {
+  const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +30,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, selectedImage 
 
     const imageFile = file as ImageFile;
     imageFile.preview = URL.createObjectURL(file);
-    onImageSelect(imageFile);
+    setSelectedImage(imageFile);
+    
+    // Create an image element from the file
+    const img = new Image();
+    img.onload = () => {
+      onImageUpload(img);
+    };
+    img.src = imageFile.preview;
   };
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -53,7 +62,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, selectedImage 
     if (selectedImage) {
       URL.revokeObjectURL(selectedImage.preview);
     }
-    onImageSelect(null);
+    setSelectedImage(null);
+    onImageUpload(null);
   };
 
   return (
@@ -70,6 +80,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, selectedImage 
               onClick={removeImage}
               className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md hover:bg-gray-100"
               aria-label="Remove image"
+              disabled={isBusy}
             >
               <X className="h-5 w-5 text-gray-700" />
             </button>
@@ -78,7 +89,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, selectedImage 
           <div
             className={`border-2 border-dashed rounded-lg p-6 text-center ${
               isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
-            }`}
+            } ${disabled || isBusy ? 'opacity-60 cursor-not-allowed' : ''}`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -87,14 +98,15 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, selectedImage 
             <p className="mt-2 text-sm font-medium text-gray-900">
               Drag and drop an image, or
             </p>
-            <label className="mt-2 cursor-pointer">
-              <Button variant="outline" className="relative">
+            <label className={`mt-2 ${disabled || isBusy ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
+              <Button variant="outline" className="relative" disabled={disabled || isBusy}>
                 Browse Files
                 <input
                   type="file"
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   onChange={handleFileChange}
                   accept="image/*"
+                  disabled={disabled || isBusy}
                 />
               </Button>
             </label>

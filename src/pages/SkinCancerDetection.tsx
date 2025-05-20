@@ -35,7 +35,7 @@ const SkinCancerDetection: React.FC = () => {
     initModel();
   }, [toast]);
 
-  const handleImageUpload = (img: HTMLImageElement) => {
+  const handleImageUpload = (img: HTMLImageElement | null) => {
     setImageElement(img);
     // Reset previous results when new image is uploaded
     setSkinCancerResult(null);
