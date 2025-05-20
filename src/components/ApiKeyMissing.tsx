@@ -8,11 +8,10 @@ import { Input } from '@/components/ui/input';
 const ApiKeyMissing: React.FC = () => {
   const [apiKey, setApiKey] = useState<string>(localStorage.getItem('openai_api_key') || '');
   const [inputKey, setInputKey] = useState<string>('');
-  const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
   
   // Set the provided API key automatically on component mount
   useEffect(() => {
-    const providedKey = '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';
+    const providedKey = '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';
     
     // Only set the key if it's not already in localStorage
     if (!localStorage.getItem('openai_api_key')) {
@@ -71,12 +70,6 @@ const ApiKeyMissing: React.FC = () => {
                   Your API key will be stored in your browser's local storage and will not be sent to any server.
                 </p>
               </div>
-              
-              {envApiKey && (
-                <p className="text-xs">
-                  Note: An environment variable API key is detected but we'll prioritize the locally stored key when available.
-                </p>
-              )}
             </div>
           </>
         )}

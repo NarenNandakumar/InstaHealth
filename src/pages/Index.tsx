@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ImageFile, DetectionResult } from '@/types';
@@ -23,7 +22,7 @@ const Index: React.FC = () => {
   const { toast } = useToast();
   const { user, userData } = useAuth();
   const navigate = useNavigate();
-  const apiKeyAvailable = !!localStorage.getItem('openai_api_key') || !!import.meta.env.VITE_OPENAI_API_KEY;
+  const apiKeyAvailable = !!localStorage.getItem('openai_api_key');
 
   // Reset result when image changes
   useEffect(() => {

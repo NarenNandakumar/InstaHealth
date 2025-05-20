@@ -18,7 +18,7 @@ const SkinCancerDetection: React.FC = () => {
   const imageRef = useRef<HTMLImageElement>(null);
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("skin-cancer");
-  const apiKeyAvailable = !!import.meta.env.VITE_OPENAI_API_KEY;
+  const apiKeyAvailable = !!localStorage.getItem('openai_api_key');
 
   // Reset result when image changes or tab changes
   useEffect(() => {
