@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -143,7 +142,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Replaced Patient Stories with AI Technology Showcase */}
+        {/* AI Technology Showcase */}
         <div className="mb-16 bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl overflow-hidden shadow-lg">
           <div className="grid md:grid-cols-2">
             <div className="p-8 flex items-center">
@@ -155,7 +154,7 @@ const Home: React.FC = () => {
                 <div className="flex flex-wrap gap-3">
                   <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 flex items-center">
                     <Brain className="h-5 w-5 text-white mr-2" />
-                    <span className="text-white text-sm font-medium">Powered by GPT-4o</span>
+                    <span className="text-white text-sm font-medium">Advanced Neural Networks</span>
                   </div>
                   <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 flex items-center">
                     <Shield className="h-5 w-5 text-white mr-2" />
