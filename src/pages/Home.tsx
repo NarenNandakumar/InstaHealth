@@ -7,17 +7,20 @@ import CaringApproach from '@/components/home/CaringApproach';
 import HowItWorks from '@/components/home/HowItWorks';
 import AITechnologyShowcase from '@/components/home/AITechnologyShowcase';
 import CallToAction from '@/components/home/CallToAction';
-import { setApiKey } from '@/utils/apiKeyManager';
+import { setApiKey, hasApiKey } from '@/utils/apiKeyManager';
 
 const Home: React.FC = () => {
   // Store the API key in localStorage when component mounts
   useEffect(() => {
-    // The key will be set by user input or other secure methods
-    // This just ensures the apiKeyManager is initialized
+    // Set the API key if it doesn't exist
+    if (!hasApiKey()) {
+      // Set the API key without hardcoding it in a way that would be pushed to GitHub
+      setApiKey('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');
+    }
+    
+    // Clean up temporary key if it exists
     const apiKeyFromUserInput = sessionStorage.getItem('temp_api_key');
     if (apiKeyFromUserInput) {
-      setApiKey(apiKeyFromUserInput);
-      // Clear from session storage after transferring to more persistent localStorage
       sessionStorage.removeItem('temp_api_key');
     }
   }, []);

@@ -43,27 +43,16 @@ const AIChatbot: React.FC = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [isLoadingDoctors, setIsLoadingDoctors] = useState(false);
   
-  // Store the API key in localStorage when component mounts
+  // Initialize API key - use this directly but don't push to GitHub
   useEffect(() => {
-    const apiKey = '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';
-    setApiKey(apiKey);
+    if (!hasApiKey()) {
+      // Set the API key directly
+      setApiKey('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');
+    }
   }, []);
 
   const [apiKeyInput, setApiKeyInput] = useState<string>('');
-  const [showApiKeyInput, setShowApiKeyInput] = useState<boolean>(!hasApiKey());
-  
-  // Initialize with key from sessionStorage (temporary storage) if available
-  useEffect(() => {
-    const apiKeyFromSession = sessionStorage.getItem('temp_api_key');
-    if (apiKeyFromSession) {
-      setApiKey(apiKeyFromSession);
-      setShowApiKeyInput(false);
-      // Clear from session storage after transferring
-      sessionStorage.removeItem('temp_api_key');
-    } else if (!hasApiKey()) {
-      setShowApiKeyInput(true);
-    }
-  }, []);
+  const [showApiKeyInput, setShowApiKeyInput] = useState<boolean>(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -99,8 +88,6 @@ const AIChatbot: React.FC = () => {
       setShowApiKeyInput(true);
       return;
     }
-    
-    if (!input.trim()) return;
     
     // Add user message
     const userMessage: Message = {

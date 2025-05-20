@@ -37,5 +37,6 @@ export const removeApiKey = (): void => {
  * Checks if an API key exists in localStorage
  */
 export const hasApiKey = (): boolean => {
+  if (typeof window === 'undefined') return false;
   return !!localStorage.getItem(API_KEY_STORAGE_KEY);
 };
